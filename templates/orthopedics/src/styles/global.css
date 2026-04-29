@@ -1,0 +1,90 @@
+/* MEDPLATFORM Orthopedics — Bold Professional */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+
+:root {
+  --color-brand-primary: #0A2E6E;
+  --color-brand-secondary: #1565C0;
+  --color-brand-accent: #FF6B35;
+  --color-surface-base: #FFFFFF;
+  --color-surface-alt: #F0F4FF;
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #4A5568;
+  --color-text-inverse: #FFFFFF;
+  --font-display: 'Inter', 'Arial Black', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-stats: 'Bebas Neue', sans-serif;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 2px 8px rgba(10,46,110,0.08);
+  --shadow-md: 0 8px 32px rgba(10,46,110,0.14);
+  --shadow-lg: 0 20px 60px rgba(10,46,110,0.18);
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.6s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background: var(--color-surface-base);
+  margin: 0;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; font-weight: 700; }
+h1 { font-size: clamp(2.25rem, 5vw, 4.5rem); }
+h2 { font-size: clamp(1.75rem, 3vw, 2.75rem); }
+h3 { font-size: clamp(1.125rem, 1.8vw, 1.5rem); }
+
+.container { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 4rem); }
+.section { padding: clamp(4rem, 8vw, 7rem) 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.875rem 2rem; font-family: var(--font-body); font-size: 0.9375rem;
+  font-weight: 600; letter-spacing: 0.02em; border-radius: var(--radius-md);
+  border: 2px solid transparent; cursor: pointer; transition: var(--transition-base);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--color-brand-primary); color: var(--color-text-inverse);
+  border-color: var(--color-brand-primary);
+}
+.btn-primary:hover { background: #071f4d; border-color: #071f4d; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-ghost {
+  background: transparent; color: var(--color-text-inverse);
+  border-color: rgba(255,255,255,0.6);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.12); border-color: white; }
+.btn-accent {
+  background: var(--color-brand-accent); color: var(--color-text-inverse);
+  border-color: var(--color-brand-accent);
+}
+.btn-accent:hover { background: #e55a24; border-color: #e55a24; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-accent-outline {
+  background: transparent; color: var(--color-brand-accent);
+  border-color: var(--color-brand-accent);
+}
+.btn-accent-outline:hover { background: var(--color-brand-accent); color: white; }
+
+:focus-visible { outline: 2px solid var(--color-brand-accent); outline-offset: 3px; }
+
+.section-tag {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--color-brand-accent);
+  display: block; margin-bottom: 0.75rem;
+}
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-header h2 { margin: 0 0 1rem; color: var(--color-brand-primary); }
+
+.orange-rule { width: 48px; height: 3px; background: var(--color-brand-accent); display: block; margin: 0 auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

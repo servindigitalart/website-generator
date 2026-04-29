@@ -1,0 +1,41 @@
+---
+const { quote, patient, treatment } = Astro.props;
+---
+<blockquote class="testimonial-card">
+  <span class="quote-mark" aria-hidden="true">"</span>
+  <p class="quote-text">{quote}</p>
+  <footer class="attribution">
+    <span class="attribution-line" aria-hidden="true"></span>
+    <div>
+      <span class="patient-name">{patient}</span>
+      <span class="treatment-tag">{treatment}</span>
+    </div>
+  </footer>
+</blockquote>
+
+<style>
+.testimonial-card {
+  margin: 0; padding: 3rem;
+  background: var(--color-surface-light);
+  border-top: 1px solid rgba(201,169,110,0.3);
+  position: relative;
+}
+.quote-mark {
+  font-family: var(--font-display); font-size: 7rem; line-height: 0.6;
+  color: var(--color-text-gold); display: block; margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+.quote-text {
+  font-family: var(--font-caption); font-size: 1.375rem; font-style: italic;
+  color: var(--color-text-primary); line-height: 1.7;
+  margin: 0 0 2rem;
+}
+.attribution { display: flex; align-items: center; gap: 1rem; }
+.attribution-line { display: block; width: 32px; height: 1px; background: var(--color-text-gold); flex-shrink: 0; }
+.patient-name {
+  display: block; font-size: 0.75rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--color-text-primary);
+  font-family: var(--font-body); margin-bottom: 0.2rem;
+}
+.treatment-tag { font-family: var(--font-caption); font-style: italic; color: var(--color-text-secondary); font-size: 0.875rem; }
+</style>

@@ -1,0 +1,135 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": site.clinic_name,
+  "telephone": site.phone,
+  "email": site.email,
+  "address": { "@type": "PostalAddress", "streetAddress": site.address },
+  "openingHours": site.hours,
+  "url": siteUrl,
+};
+---
+<Layout
+  title={`Contact | ${site.clinic_name}`}
+  description={`Contact ${site.clinic_name}. Call, email, or book your appointment online.`}
+  schema={schema}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a> <span> / </span> <span aria-current="page">Contact</span>
+      </nav>
+      <h1 class="reveal">Get In Touch</h1>
+      <p class="page-hero-sub reveal">We are here to answer your questions and schedule your visit</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <div class="contact-form-wrap reveal">
+        <h2>Book an Appointment</h2>
+        <form class="contact-form" method="POST" name="contact" data-netlify="true" aria-label="Contact form">
+          <input type="hidden" name="form-name" value="contact" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" />
+          </div>
+          <div class="form-group">
+            <label for="service">Service of Interest</label>
+            <select id="service" name="service">
+              <option value="">Select a service</option>
+              <option>Acne Treatment</option>
+              <option>Anti-Aging</option>
+              <option>Laser Therapy</option>
+              <option>Cosmetic Dermatology</option>
+              <option>Skin Cancer Screening</option>
+              <option>General Consultation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="preferred-time">Preferred Time</label>
+            <select id="preferred-time" name="preferred_time">
+              <option value="">Select a time</option>
+              <option>Morning (9am–12pm)</option>
+              <option>Afternoon (12pm–5pm)</option>
+              <option>Either</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" placeholder="Tell us about your concern..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+      </div>
+
+      <aside class="contact-info reveal" aria-label="Contact information">
+        <div class="info-card">
+          <h3>Visit Us</h3>
+          <address>{site.address}</address>
+        </div>
+        <div class="info-card">
+          <h3>Call or Email</h3>
+          <p><a href={`tel:${site.phone}`}>{site.phone}</a></p>
+          <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        </div>
+        <div class="info-card">
+          <h3>Office Hours</h3>
+          <p>{site.hours}</p>
+        </div>
+        <div class="map-placeholder" aria-label="Map placeholder" role="img"></div>
+      </aside>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #4A3F7A, #2D1F5E); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2.25rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); margin: 0; }
+.contact-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5rem; }
+.contact-form-wrap h2 { font-family: var(--font-display); font-size: 1.75rem; color: var(--color-brand-primary); margin: 0 0 2rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+.form-group label { font-size: 0.875rem; font-weight: 600; color: var(--color-text-primary); }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.75rem 1rem; border: 1.5px solid rgba(196,168,130,0.3);
+  border-radius: var(--radius-md); font-family: var(--font-body);
+  font-size: 0.9375rem; color: var(--color-text-primary);
+  background: var(--color-surface-base); transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--color-brand-primary); outline: none; }
+.info-card { margin-bottom: 2rem; }
+.info-card h3 { font-family: var(--font-display); font-size: 1.125rem; color: var(--color-brand-primary); margin: 0 0 0.5rem; }
+.info-card address, .info-card p { font-style: normal; color: var(--color-text-secondary); margin: 0 0 0.25rem; line-height: 1.7; }
+.info-card a { color: var(--color-brand-primary); }
+.map-placeholder { height: 240px; border-radius: var(--radius-lg); background: linear-gradient(135deg, #4A3F7A15, #C4A88215); border: 1px solid rgba(196,168,130,0.2); margin-top: 1rem; }
+@media (max-width: 1023px) { .contact-grid { grid-template-columns: 1fr; } }
+@media (max-width: 639px) { .form-row { grid-template-columns: 1fr; } }
+</style>

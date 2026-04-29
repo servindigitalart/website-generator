@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout title={`Investment | ${site.clinic_name}`} description={`Pricing, financing, and investment information for ${site.clinic_name}.`}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a><span> / </span><span aria-current="page">Investment</span></nav>
+      <span class="page-overline">Your Investment</span>
+      <h1 class="reveal">Pricing & Financing</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="content-cols">
+        <div class="reveal">
+          <div class="gold-rule" style="margin-bottom:2rem;"></div>
+          <h2>Transparent Pricing</h2>
+          <p>At {site.clinic_name}, we believe in complete transparency. All pricing is discussed during your private consultation based on your individual treatment plan.</p>
+          <p>Most aesthetic treatments are not covered by insurance as they are elective procedures. We offer flexible financing options to make your transformation accessible.</p>
+
+          <h2 style="margin-top:3rem;">Financing Options</h2>
+          <div class="financing-grid">
+            {["CareCredit (0% APR options)", "Cherry Financing", "Affirm", "Internal Payment Plans"].map(f => (
+              <div class="financing-card">
+                <div class="gold-rule" style="margin-bottom:1rem;width:40px;"></div>
+                <p>{f}</p>
+              </div>
+            ))}
+          </div>
+
+          <h2 style="margin-top:3rem;">Frequently Asked Questions</h2>
+          {[
+            { q: "Does insurance cover aesthetic treatments?", a: "Most elective aesthetic treatments are not covered by insurance. Medical conditions (like hyperhidrosis treated with Botox) may have partial coverage." },
+            { q: "Do you offer packages?", a: "Yes, we offer curated treatment packages that provide better value for combination therapies. Your specialist will recommend the optimal package during your consultation." },
+            { q: "What is your cancellation policy?", a: "We request 48 hours notice for cancellations. Late cancellations may incur a fee as your appointment time is reserved exclusively for you." },
+          ].map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <aside class="info-sidebar">
+          <div class="sidebar-card">
+            <p class="sidebar-overline">Private Consultation</p>
+            <h3>Discuss Your Investment</h3>
+            <p>Schedule a confidential consultation to receive personalized pricing for your treatment plan.</p>
+            <a href="/contact" class="btn btn-ghost" style="width:100%;text-align:center;">Book Now</a>
+            <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(201,169,110,0.15);">
+              <a href={`tel:${site.phone}`} class="sidebar-phone">{site.phone}</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%; animation: gradientShift 8s ease infinite;
+  padding: 10rem 0 4rem;
+}
+.breadcrumb { font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(245,240,232,0.4); }
+.page-overline { font-size: 0.625rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-text-gold); display: block; margin-bottom: 1rem; }
+.page-hero h1 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0; }
+.content-cols { display: grid; grid-template-columns: 1fr 300px; gap: 5rem; align-items: start; }
+.content-cols h2 { font-family: var(--font-display); color: var(--color-text-primary); margin: 0 0 1rem; font-size: 1.75rem; font-weight: 400; }
+.content-cols p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; font-size: 0.9375rem; }
+.financing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1.5rem; }
+.financing-card { padding: 1.5rem; background: var(--color-surface-light); border-top: 1px solid rgba(201,169,110,0.2); }
+.financing-card p { color: var(--color-text-primary); margin: 0; font-size: 0.9rem; }
+.faq-item { border-bottom: 1px solid rgba(201,169,110,0.15); }
+.faq-q { cursor: none; padding: 1.25rem 0; font-size: 0.9375rem; color: var(--color-text-primary); list-style: none; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::before { content: '+'; margin-right: 0.875rem; color: var(--color-text-gold); }
+details[open] .faq-q::before { content: '−'; }
+.faq-a { padding: 0 0 1.25rem 1.5rem; color: var(--color-text-secondary); line-height: 1.75; margin: 0; font-size: 0.9rem; }
+.info-sidebar { position: sticky; top: 100px; }
+.sidebar-card { background: var(--color-surface-light); border-top: 1px solid var(--color-text-gold); padding: 2.5rem 2rem; }
+.sidebar-overline { font-size: 0.625rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-text-gold); margin: 0 0 0.75rem; }
+.sidebar-card h3 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0 0 0.875rem; font-size: 1.5rem; }
+.sidebar-card p { color: var(--color-text-secondary); font-size: 0.875rem; margin: 0 0 1.5rem; }
+.sidebar-phone { font-size: 1.125rem; color: var(--color-text-gold); letter-spacing: 0.05em; }
+@media (max-width: 1023px) { .content-cols { grid-template-columns: 1fr; } .info-sidebar { position: static; } .financing-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,318 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      "url": siteUrl,
+      "name": site.clinic_name,
+      "description": site.tagline,
+    },
+    {
+      "@type": "MedicalOrganization",
+      "@id": `${siteUrl}/#org`,
+      "name": site.clinic_name,
+      "url": siteUrl,
+      "telephone": site.phone,
+      "email": site.email,
+      "address": { "@type": "PostalAddress", "streetAddress": site.address },
+      "medicalSpecialty": "Dermatology",
+    }
+  ]
+};
+
+const defaultServices = [
+  { name: "Acne Treatment", description: "Advanced therapies for clear, healthy skin.", page_slug: "acne-treatment" },
+  { name: "Anti-Aging", description: "Restore youthfulness with proven treatments.", page_slug: "anti-aging" },
+  { name: "Laser Therapy", description: "Precision laser for skin resurfacing and renewal.", page_slug: "laser-therapy" },
+  { name: "Cosmetic Dermatology", description: "Enhance your natural beauty with expert care.", page_slug: "cosmetic-dermatology" },
+  { name: "Skin Cancer Screening", description: "Comprehensive dermatoscopy and early detection.", page_slug: "skin-cancer-screening" },
+  { name: "Eczema & Psoriasis", description: "Effective management of chronic skin conditions.", page_slug: "eczema-psoriasis" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+
+const defaultDoctors = [
+  { name: "Dr. Sarah Chen", title: "MD, FAAD", specialty: "Board-Certified Dermatologist", bio: "15 years of expertise in cosmetic and medical dermatology.", credentials: ["FAAD", "AAD"] },
+  { name: "Dr. Marcus Reed", title: "MD", specialty: "Cosmetic Dermatology", bio: "Specializing in laser treatments and skin rejuvenation.", credentials: ["AAD"] },
+  { name: "Dr. Priya Nair", title: "MD, PhD", specialty: "Mohs Surgery", bio: "Fellowship-trained in Mohs micrographic surgery.", credentials: ["ACMS", "AAD"] },
+];
+const doctors = site.doctors.length > 0 ? site.doctors : defaultDoctors;
+
+const defaultTestimonials = [
+  { quote: "After years of struggling with my skin, I finally found a team that truly listened. The results speak for themselves.", patient: "Emily R.", treatment: "Acne Treatment" },
+  { quote: "The level of care and expertise here is unmatched. My skin has never looked better at 52 than it does today.", patient: "Margaret L.", treatment: "Anti-Aging Program" },
+];
+
+const stats = [
+  { value: 12000, suffix: "+", label: "Patients Treated" },
+  { value: 18, suffix: "+ Yrs", label: "Combined Experience" },
+  { value: 98, suffix: "%", label: "Patient Satisfaction" },
+  { value: 3, suffix: "", label: "Board-Certified MDs" },
+];
+---
+<Layout
+  title={`${site.clinic_name} | Expert Dermatology Care`}
+  description={`${site.clinic_name} — ${site.tagline}. Board-certified dermatologists offering premium skin care.`}
+  schema={schema}
+>
+  <Nav />
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <p class="hero-overline hero-animate">{site.tagline || 'Expert Dermatology Care'}</p>
+      <h1 id="hero-heading" class="hero-heading hero-animate">{site.hero_headline || site.clinic_name}</h1>
+      <p class="hero-sub hero-animate">{site.hero_subtext}</p>
+      <div class="hero-ctas hero-animate">
+        <a href="/contact" class="btn btn-primary">Book Consultation</a>
+        <a href="/services" class="btn btn-ghost">Our Services</a>
+      </div>
+    </div>
+    <div class="scroll-indicator" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <section class="trust-bar" aria-label="Practice statistics">
+    <div class="container trust-inner">
+      {stats.map(stat => (
+        <div class="stat-item">
+          <p
+            class="stat-number"
+            data-target={stat.value}
+            data-suffix={stat.suffix}
+            aria-label={`${stat.value}${stat.suffix} ${stat.label}`}
+          >
+            0
+          </p>
+          <p class="stat-label">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section services-section" aria-labelledby="services-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">What We Offer</span>
+        <h2 id="services-heading">Our Services</h2>
+        <span class="gold-rule"></span>
+      </header>
+      <div class="services-grid">
+        {services.slice(0, 6).map((s: any, i: number) => (
+          <ServiceCard
+            number={String(i + 1).padStart(2, '0')}
+            name={s.name}
+            description={s.description}
+            slug={s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}
+          />
+        ))}
+      </div>
+      <div class="section-cta reveal">
+        <a href="/services" class="btn btn-primary">View All Services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCTORS -->
+  <section class="section doctors-section" aria-labelledby="doctors-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Our Specialists</span>
+        <h2 id="doctors-heading">Meet Your Specialists</h2>
+        <span class="gold-rule"></span>
+      </header>
+      <div class="doctors-grid">
+        {doctors.slice(0, 3).map((d: any) => (
+          <DoctorCard {...d} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section testimonials-section" aria-labelledby="testimonials-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Patient Stories</span>
+        <h2 id="testimonials-heading">What Our Patients Say</h2>
+        <span class="gold-rule"></span>
+      </header>
+      <div class="testimonials-grid">
+        {defaultTestimonials.map(t => (
+          <TestimonialCard {...t} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE/AFTER -->
+  <section class="section ba-section" aria-labelledby="ba-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Real Results</span>
+        <h2 id="ba-heading">Before &amp; After</h2>
+        <span class="gold-rule"></span>
+      </header>
+      <div class="ba-grid">
+        {[1,2].map(n => (
+          <div class="ba-pair reveal">
+            <div class="ba-images">
+              <div class="ba-img" aria-label="Before treatment">
+                <div class="ba-placeholder before-placeholder"></div>
+                <span class="ba-label">Before</span>
+              </div>
+              <div class="ba-divider" aria-hidden="true"></div>
+              <div class="ba-img" aria-label="After treatment">
+                <div class="ba-placeholder after-placeholder"></div>
+                <span class="ba-label">After</span>
+              </div>
+            </div>
+            <p class="ba-caption">Acne Scar Treatment — 6-month results</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+/* HERO */
+.hero {
+  position: relative; min-height: 100svh;
+  display: flex; align-items: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #4A3F7A 0%, #2D1F5E 60%, #1A1530 100%);
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(196,168,130,0.08), transparent 70%);
+}
+.hero-content {
+  position: relative; z-index: 1;
+  padding-top: 8rem; padding-bottom: 6rem;
+  max-width: 760px;
+}
+.hero-overline {
+  font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--color-brand-secondary);
+  margin: 0 0 1rem;
+}
+.hero-heading {
+  font-family: var(--font-display); font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 600; color: var(--color-text-inverse);
+  letter-spacing: 0.02em; margin: 0 0 1.25rem; line-height: 1.1;
+}
+.hero-sub {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: rgba(255,255,255,0.8); margin: 0 0 2.5rem; max-width: 560px;
+}
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+.scroll-indicator {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  animation: scrollBounce 1.6s ease-in-out infinite; z-index: 1;
+}
+
+/* TRUST BAR */
+.trust-bar {
+  background: var(--color-brand-primary);
+  border-top: 3px solid var(--color-brand-secondary);
+}
+.trust-inner {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; padding: 3rem 0;
+}
+.stat-item {
+  text-align: center; padding: 1.5rem 1rem;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.stat-item:last-child { border-right: none; }
+.stat-number {
+  font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3.25rem);
+  font-weight: 700; color: var(--color-brand-secondary);
+  margin: 0 0 0.375rem; line-height: 1;
+}
+.stat-label { color: rgba(255,255,255,0.7); font-size: 0.875rem; margin: 0; }
+
+/* SERVICES */
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-tag {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--color-brand-secondary);
+  display: block; margin-bottom: 0.75rem;
+}
+.section-header h2 { margin: 0 0 1rem; }
+.section-header .gold-rule { margin: 0 auto; }
+.services-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+}
+.services-section { background: var(--color-surface-alt); }
+.section-cta { text-align: center; margin-top: 3rem; }
+
+/* DOCTORS */
+.doctors-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+}
+
+/* TESTIMONIALS */
+.testimonials-section { background: var(--color-surface-alt); }
+.testimonials-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
+}
+
+/* BEFORE/AFTER */
+.ba-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; }
+.ba-pair {}
+.ba-images { display: flex; align-items: stretch; gap: 0; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); }
+.ba-img { flex: 1; position: relative; }
+.ba-placeholder {
+  height: 280px; width: 100%;
+}
+.before-placeholder { background: linear-gradient(135deg, #c9b8d8, #9b8bb0); }
+.after-placeholder { background: linear-gradient(135deg, #e8dff5, #c4b0e0); }
+.ba-label {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba(0,0,0,0.5); color: white;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+  padding: 0.25rem 0.625rem; border-radius: 100px;
+  text-transform: uppercase;
+}
+.ba-divider { width: 2px; background: white; flex-shrink: 0; }
+.ba-caption { text-align: center; color: var(--color-text-secondary); font-style: italic; margin-top: 1rem; font-size: 0.9rem; }
+
+/* Responsive */
+@media (max-width: 1023px) {
+  .services-grid, .doctors-grid { grid-template-columns: repeat(2, 1fr); }
+  .trust-inner { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+}
+@media (max-width: 639px) {
+  .services-grid, .doctors-grid, .testimonials-grid, .ba-grid { grid-template-columns: 1fr; }
+  .trust-inner { grid-template-columns: repeat(2, 1fr); }
+  .hero-ctas { flex-direction: column; align-items: flex-start; }
+}
+</style>

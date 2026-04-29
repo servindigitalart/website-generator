@@ -1,0 +1,84 @@
+---
+import site from '../content/site.json';
+
+const navLinks = [
+  { label: 'Services', href: '/services' },
+  { label: 'Team', href: '/team' },
+  { label: 'About', href: '/about' },
+  { label: 'Patient Info', href: '/patient-info' },
+  { label: 'Insurance', href: '/insurance' },
+  { label: 'Contact', href: '/contact' },
+];
+---
+<header class="site-nav">
+  <div class="container nav-inner">
+    <a href="/" class="nav-logo" aria-label={site.clinic_name}>
+      {site.logo_url ? <img src={site.logo_url} alt={site.clinic_name} width="140" height="40" /> : <span class="nav-logo-text">{site.clinic_name}</span>}
+    </a>
+    <nav aria-label="Main navigation" class="nav-links">
+      {navLinks.map(link => (
+        <a href={link.href} class="nav-link">{link.label}</a>
+      ))}
+    </nav>
+    <a href="/contact" class="btn btn-primary nav-cta">Book Appointment</a>
+    <button class="nav-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav id="mobile-menu" class="nav-mobile" aria-label="Mobile navigation">
+    {navLinks.map(link => (
+      <a href={link.href} class="nav-mobile-link">{link.label}</a>
+    ))}
+    <a href="/contact" class="btn btn-primary" style="margin:1rem 1.5rem 0.5rem;">Book Appointment</a>
+  </nav>
+</header>
+
+<style>
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: transparent;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.site-nav.scrolled {
+  background: white;
+  box-shadow: 0 1px 0 var(--color-border), 0 4px 16px rgba(0,0,0,0.06);
+}
+.nav-inner {
+  display: flex; align-items: center; gap: 2rem;
+  height: 72px;
+}
+.nav-logo { flex-shrink: 0; }
+.nav-logo-text {
+  font-family: var(--font-display); font-size: 1.125rem; font-weight: 700;
+  color: white; transition: color 0.3s;
+}
+.site-nav.scrolled .nav-logo-text { color: var(--color-text-primary); }
+.nav-links { display: flex; gap: 0.25rem; margin-left: auto; }
+.nav-link {
+  padding: 0.5rem 0.875rem; font-size: 0.875rem; font-weight: 500;
+  color: rgba(255,255,255,0.85); border-radius: var(--radius-md);
+  transition: color var(--transition), background var(--transition);
+}
+.nav-link:hover { color: white; background: rgba(255,255,255,0.12); }
+.site-nav.scrolled .nav-link { color: var(--color-text-secondary); }
+.site-nav.scrolled .nav-link:hover { color: var(--color-brand-primary); background: rgba(0,122,230,0.06); }
+.nav-cta { font-size: 0.875rem; padding: 0.6rem 1.25rem; }
+.nav-menu-btn {
+  display: none; flex-direction: column; gap: 5px; background: none; border: none;
+  cursor: pointer; padding: 0.5rem;
+}
+.nav-menu-btn span {
+  display: block; width: 22px; height: 2px;
+  background: white; border-radius: 2px; transition: background var(--transition);
+}
+.site-nav.scrolled .nav-menu-btn span { background: var(--color-text-primary); }
+.nav-mobile { display: none; flex-direction: column; background: white; border-top: 1px solid var(--color-border); padding-bottom: 0.5rem; }
+.nav-mobile-link { padding: 0.875rem 1.5rem; font-size: 0.9375rem; color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border); }
+.nav-mobile-link:hover { color: var(--color-brand-primary); background: var(--color-surface-alt); }
+.nav-mobile.open { display: flex; }
+@media (max-width: 1023px) {
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-menu-btn { display: flex; margin-left: auto; }
+}
+</style>

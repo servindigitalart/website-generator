@@ -1,0 +1,35 @@
+---
+import site from '../content/site.json';
+---
+<section class="cta-section">
+  <div class="container cta-inner">
+    <div class="cta-text reveal">
+      <h2>Ready to Get Started?</h2>
+      <p>Schedule your appointment today and experience the difference personalized care makes.</p>
+    </div>
+    <div class="cta-actions reveal reveal-delay-1">
+      <a href="/contact" class="btn btn-white">{site.main_cta}</a>
+      <a href={`tel:${site.phone}`} class="btn btn-outline-white">{site.phone}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.cta-section {
+  background: linear-gradient(135deg, var(--color-brand-primary) 0%, var(--color-brand-secondary) 100%);
+  padding: 5rem 0;
+}
+.cta-inner { display: flex; align-items: center; justify-content: space-between; gap: 3rem; flex-wrap: wrap; }
+.cta-text h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); color: white; margin-bottom: 0.75rem; }
+.cta-text p { color: rgba(255,255,255,0.8); font-size: 1rem; max-width: 480px; }
+.cta-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-outline-white {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.75rem 1.75rem; font-family: var(--font-display); font-size: 0.9375rem; font-weight: 600;
+  border-radius: var(--radius-full); border: 2px solid rgba(255,255,255,0.5);
+  color: white; background: transparent; text-decoration: none;
+  transition: all var(--transition);
+}
+.btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.1); color: white; }
+@media (max-width: 768px) { .cta-inner { flex-direction: column; text-align: center; } }
+</style>

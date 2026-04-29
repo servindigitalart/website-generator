@@ -1,0 +1,45 @@
+---
+const { name, description, slug, price_hint = '' } = Astro.props;
+---
+<article class="service-item">
+  <a href={`/services/${slug}`} class="service-card" aria-label={name}>
+    <div class="card-top-border" aria-hidden="true"></div>
+    <h3 class="card-name">{name}</h3>
+    <p class="card-desc">{description}</p>
+    {price_hint && <p class="card-price">{price_hint}</p>}
+    <span class="card-link">Explore →</span>
+  </a>
+</article>
+
+<style>
+.service-card {
+  display: flex; flex-direction: column; height: 100%;
+  padding: 2.5rem 2rem;
+  background: var(--color-surface-light);
+  transition: background 0.4s ease;
+  position: relative; overflow: hidden;
+}
+.service-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(201,169,110,0.03);
+  opacity: 0; transition: opacity 0.4s;
+}
+.service-card:hover { background: var(--color-surface-alt); }
+.service-card:hover::before { opacity: 1; }
+.card-top-border {
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--color-text-gold);
+}
+.card-name {
+  font-family: var(--font-display); font-size: 1.375rem; font-weight: 400;
+  color: var(--color-text-primary); margin: 1.5rem 0 1rem; line-height: 1.3;
+}
+.card-desc { color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.75; margin: 0 0 1rem; flex: 1; }
+.card-price { font-family: var(--font-caption); font-style: italic; color: var(--color-text-gold); font-size: 0.875rem; margin: 0 0 1rem; }
+.card-link {
+  font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--color-text-gold); font-family: var(--font-body);
+  transition: letter-spacing 0.3s;
+}
+.service-card:hover .card-link { letter-spacing: 0.3em; }
+</style>

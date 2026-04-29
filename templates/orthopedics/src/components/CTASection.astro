@@ -1,0 +1,38 @@
+---
+import site from '../content/site.json';
+const {
+  headline = 'Ready to Move Better?',
+  subtext = 'Expert orthopedic care. Advanced treatments. Lasting results.',
+  ctaLabel = site.main_cta,
+  ctaHref = '/contact',
+} = Astro.props;
+---
+<section class="cta-section">
+  <div class="container cta-inner">
+    <div class="reveal">
+      <h2 class="cta-headline">{headline}</h2>
+      <p class="cta-sub">{subtext}</p>
+    </div>
+    <a href={ctaHref} class="btn btn-accent cta-btn" style="color:white;">{ctaLabel}</a>
+  </div>
+</section>
+
+<style>
+.cta-section {
+  background: var(--color-brand-primary);
+  padding: 6rem 0; position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: ''; position: absolute; top: -80px; right: -80px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: rgba(255,255,255,0.03); pointer-events: none;
+}
+.cta-inner { display: flex; align-items: center; justify-content: space-between; gap: 3rem; flex-wrap: wrap; }
+.cta-headline {
+  font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.75rem);
+  color: white; margin: 0 0 0.75rem;
+}
+.cta-sub { color: rgba(255,255,255,0.75); margin: 0; font-size: 1.125rem; }
+.cta-btn { flex-shrink: 0; font-size: 1rem; padding: 1rem 2.5rem; }
+@media (max-width: 767px) { .cta-inner { flex-direction: column; text-align: center; } }
+</style>

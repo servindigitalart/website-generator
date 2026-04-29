@@ -1,0 +1,23 @@
+---
+const {
+  title,
+  description = '',
+  canonical = '',
+  ogImage = '',
+  schema = null,
+} = Astro.props;
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_VERIFICATION;
+---
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={canonical} />
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:image" content={ogImage} />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+{googleVerification && (
+  <meta name="google-site-verification" content={googleVerification} />
+)}
+{schema && (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+)}

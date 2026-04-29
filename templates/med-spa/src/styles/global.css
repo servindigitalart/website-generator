@@ -1,0 +1,123 @@
+/* MEDPLATFORM Med Spa — Dark Editorial Luxury */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garant:ital,wght@0,400;1,400&display=swap');
+
+:root {
+  --color-brand-primary: #1A1A2E;
+  --color-brand-secondary: #C9A96E;
+  --color-brand-accent: #E8D5B7;
+  --color-surface-base: #0F0F1A;
+  --color-surface-alt: #1E1E30;
+  --color-surface-light: #252538;
+  --color-text-primary: #F5F0E8;
+  --color-text-secondary: #B8B0A0;
+  --color-text-gold: #C9A96E;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Helvetica Neue', Arial, sans-serif;
+  --font-caption: 'Cormorant Garant', serif;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+  --transition-base: 0.3s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background: var(--color-surface-base);
+  margin: 0; line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; font-weight: 400; }
+h1 { font-size: clamp(2.5rem, 5vw, 5.625rem); }
+h2 { font-size: clamp(2rem, 3.5vw, 3.25rem); }
+h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); }
+
+.container { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 4rem); }
+.section { padding: clamp(4rem, 8vw, 8rem) 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 1rem 2.5rem; font-family: var(--font-body); font-size: 0.875rem;
+  font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
+  border-radius: 0; border: 1px solid transparent;
+  cursor: pointer; transition: var(--transition-base); text-decoration: none;
+}
+.btn-ghost {
+  background: transparent; color: var(--color-text-gold);
+  border-color: var(--color-text-gold);
+}
+.btn-ghost:hover { background: var(--color-text-gold); color: var(--color-surface-base); }
+.btn-primary {
+  background: var(--color-text-gold); color: var(--color-surface-base);
+  border-color: var(--color-text-gold);
+}
+.btn-primary:hover { background: #B8966A; border-color: #B8966A; }
+
+:focus-visible { outline: 1px solid var(--color-text-gold); outline-offset: 3px; }
+
+/* Gold rule */
+.gold-rule { width: 80px; height: 1px; background: var(--color-text-gold); display: block; }
+
+/* Section tags */
+.section-tag {
+  font-family: var(--font-body); font-size: 0.6875rem; font-weight: 400;
+  letter-spacing: 0.35em; text-transform: uppercase; color: var(--color-text-gold);
+  display: block; margin-bottom: 1rem;
+}
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-header h2 { color: var(--color-text-primary); margin: 0 0 1.5rem; }
+.section-header .gold-rule { margin: 0 auto; }
+
+/* Animated gradient hero */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.hero-bg {
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* Horizontal scroll services */
+.services-horizontal {
+  display: flex; gap: 24px; overflow-x: auto;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; padding: 40px 0;
+}
+.services-horizontal::-webkit-scrollbar { display: none; }
+.service-item { min-width: 320px; scroll-snap-align: start; flex-shrink: 0; }
+
+/* Custom cursor */
+@media (pointer: fine) {
+  *, *::before, *::after { cursor: none !important; }
+  .cursor {
+    position: fixed; width: 40px; height: 40px;
+    border: 1px solid #C9A96E; border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-dot {
+    position: fixed; width: 6px; height: 6px;
+    background: #C9A96E; border-radius: 50%;
+    pointer-events: none; z-index: 10000;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .hero-bg { animation: none !important; background: #1A1A2E; }
+}

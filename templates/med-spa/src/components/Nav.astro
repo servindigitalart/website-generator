@@ -1,0 +1,100 @@
+---
+import site from '../content/site.json';
+const navLinks = [
+  { href: '/services', label: 'Treatments' },
+  { href: '/team', label: 'Our Team' },
+  { href: '/about', label: 'About' },
+  { href: '/patient-info', label: 'Patient Info' },
+  { href: '/insurance', label: 'Investment' },
+];
+const currentPath = Astro.url.pathname;
+---
+<nav class="site-nav" aria-label="Main navigation">
+  <div class="nav-inner container">
+    <a href="/" class="nav-logo" aria-label={site.clinic_name + ' home'}>
+      {site.logo_url
+        ? <img src={site.logo_url} alt={site.clinic_name} width="160" height="40" />
+        : <span class="nav-logo-text">{site.clinic_name}</span>
+      }
+    </a>
+    <ul class="nav-links" role="list">
+      {navLinks.map(link => (
+        <li>
+          <a
+            href={link.href}
+            class={`nav-link${currentPath.startsWith(link.href) ? ' nav-link--active' : ''}`}
+            aria-current={currentPath.startsWith(link.href) ? 'page' : undefined}
+          >{link.label}</a>
+        </li>
+      ))}
+    </ul>
+    <a href="/contact" class="btn btn-ghost nav-cta cta-magnetic">Begin Your Journey</a>
+    <details class="nav-mobile-toggle">
+      <summary aria-label="Open navigation menu">
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </summary>
+      <div class="nav-mobile-panel">
+        <ul role="list">
+          {navLinks.map(link => (
+            <li><a href={link.href} class="nav-mobile-link">{link.label}</a></li>
+          ))}
+          <li><a href="/contact" class="btn btn-ghost" style="width:100%;text-align:center;margin-top:1rem;">Begin Your Journey</a></li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</nav>
+
+<style>
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1.5rem 0;
+  transition: background 0.5s ease, padding 0.4s ease, border-color 0.5s ease;
+  border-bottom: 1px solid transparent;
+}
+.site-nav.nav-scrolled {
+  background: rgba(15,15,26,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom-color: rgba(201,169,110,0.2);
+  padding: 1rem 0;
+}
+.nav-inner { display: flex; align-items: center; gap: 2rem; }
+.nav-logo-text {
+  font-family: var(--font-display); font-size: 1.25rem; font-weight: 400;
+  color: var(--color-text-primary); letter-spacing: 0.1em;
+}
+.nav-links { display: flex; gap: 2.5rem; list-style: none; margin: 0; padding: 0; margin-left: auto; }
+.nav-link {
+  font-size: 0.75rem; font-weight: 400; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--color-text-secondary);
+  position: relative; padding-bottom: 4px; transition: color 0.3s;
+}
+.nav-link::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px; background: var(--color-text-gold);
+  transition: width 0.4s ease;
+}
+.nav-link:hover::after, .nav-link--active::after { width: 100%; }
+.nav-link:hover { color: var(--color-text-gold); }
+.nav-cta { font-size: 0.6875rem; padding: 0.75rem 1.75rem; }
+.nav-mobile-toggle { display: none; }
+.nav-mobile-toggle > summary { list-style: none; cursor: none; }
+.nav-mobile-toggle > summary::-webkit-details-marker { display: none; }
+.hamburger { display: flex; flex-direction: column; gap: 5px; padding: 4px; }
+.hamburger span { display: block; width: 24px; height: 1px; background: var(--color-text-gold); transition: var(--transition-base); }
+.nav-mobile-panel {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-surface-base); padding: 6rem 2rem 2rem; z-index: -1;
+}
+.nav-mobile-panel ul { list-style: none; padding: 0; margin: 0; }
+.nav-mobile-link {
+  display: block; padding: 1.25rem 0;
+  font-family: var(--font-display); font-size: 2rem; font-weight: 400;
+  color: var(--color-text-primary); border-bottom: 1px solid rgba(201,169,110,0.2);
+  letter-spacing: 0.05em;
+}
+@media (max-width: 1023px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-mobile-toggle { display: block; margin-left: auto; }
+}
+</style>

@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import site from '../../content/site.json';
+
+export async function getStaticPaths() {
+  const defaultServices = [
+    { name: "Teeth Whitening", description: "Professional in-office and take-home whitening.", page_slug: "teeth-whitening" },
+    { name: "Dental Implants", description: "Permanent tooth replacement that looks and functions like natural teeth.", page_slug: "dental-implants" },
+    { name: "Invisalign", description: "Clear aligner therapy for straighter teeth.", page_slug: "invisalign" },
+    { name: "Cosmetic Bonding", description: "Repair chips, cracks, and gaps with tooth-colored resin.", page_slug: "cosmetic-bonding" },
+    { name: "Emergency Dental", description: "Same-day urgent dental care.", page_slug: "emergency-dental" },
+    { name: "Family Dentistry", description: "Comprehensive care for patients of all ages.", page_slug: "family-dentistry" },
+    { name: "Crowns & Bridges", description: "Durable restorations to protect damaged teeth.", page_slug: "crowns-bridges" },
+    { name: "Root Canal Therapy", description: "Comfortable treatment to save infected teeth.", page_slug: "root-canal" },
+  ];
+  const services: any[] = (site as any).services?.length > 0 ? (site as any).services : defaultServices;
+  return services.map(s => ({
+    params: { slug: s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-') },
+    props: { service: s },
+  }));
+}
+
+const { service } = Astro.props;
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalProcedure",
+  "name": service.name,
+  "description": service.description,
+  "provider": { "@type": "MedicalOrganization", "name": site.clinic_name, "url": siteUrl }
+};
+
+const faqs = [
+  { q: `How long does ${service.name} take?`, a: "Treatment time varies by patient. Your dentist will provide a detailed timeline at your consultation." },
+  { q: "Is this covered by insurance?", a: "Coverage depends on your plan. We'll help verify your benefits before treatment begins." },
+  { q: "Is the procedure painful?", a: "We use the latest techniques and anesthesia to ensure your comfort throughout the procedure." },
+  { q: "How do I care for my results?", a: "Your dentist will provide personalized aftercare instructions to maintain your results long-term." },
+];
+---
+<Layout
+  title={`${service.name} | ${site.clinic_name}`}
+  description={`${service.name} at ${site.clinic_name}. ${service.description}`}
+  schema={schema}
+>
+  <Nav />
+
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span> / </span>
+        <a href="/services">Services</a><span> / </span>
+        <span aria-current="page">{service.name}</span>
+      </nav>
+      <h1>{service.name}</h1>
+      <p class="page-hero-sub">{service.description}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-layout">
+      <main class="service-main">
+        <div class="content-block reveal">
+          <h2>About This Treatment</h2>
+          <p>{service.description} Our team uses the latest techniques and technology to deliver exceptional results in a comfortable environment.</p>
+        </div>
+        <div class="content-block reveal">
+          <h2>What to Expect</h2>
+          <ul class="expect-list">
+            <li>Comprehensive consultation and examination</li>
+            <li>Personalized treatment planning</li>
+            <li>Gentle, comfortable procedure</li>
+            <li>Detailed aftercare instructions</li>
+            <li>Follow-up care as needed</li>
+          </ul>
+        </div>
+        <div class="content-block reveal">
+          <h2>Frequently Asked Questions</h2>
+          {faqs.map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </main>
+
+      <aside class="booking-sidebar">
+        <div class="booking-card">
+          <h3>Book a Consultation</h3>
+          <p>Ready to get started? Schedule your appointment today.</p>
+          <a href="/contact" class="btn btn-primary" style="width:100%;text-align:center;">Schedule Now</a>
+          <div class="sidebar-contact">
+            <a href={`tel:${site.phone}`} class="sidebar-phone">{site.phone}</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #023E8A, #0077B6); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.25rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; max-width: 640px; }
+.content-layout { display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: start; }
+.content-block { margin-bottom: 3rem; }
+.content-block h2 { font-size: 1.625rem; color: var(--color-brand-secondary); margin: 0 0 1rem; }
+.content-block p { color: var(--color-text-secondary); line-height: 1.8; }
+.expect-list { color: var(--color-text-secondary); line-height: 2; padding-left: 1.5rem; }
+.faq-item { border-bottom: 1px solid var(--color-surface-alt); }
+.faq-q { cursor: pointer; padding: 1.25rem 0; font-weight: 600; color: var(--color-brand-secondary); list-style: none; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::before { content: '+'; margin-right: 0.75rem; color: var(--color-brand-primary); font-size: 1.25rem; }
+details[open] .faq-q::before { content: '−'; }
+.faq-a { padding: 0 0 1.25rem 1.5rem; color: var(--color-text-secondary); line-height: 1.75; margin: 0; }
+.booking-sidebar { position: sticky; top: 100px; }
+.booking-card { background: var(--color-surface-alt); border-radius: var(--radius-lg); padding: 2rem; border-top: 4px solid var(--color-brand-primary); }
+.booking-card h3 { color: var(--color-brand-secondary); margin: 0 0 0.75rem; }
+.booking-card p { color: var(--color-text-secondary); margin: 0 0 1.5rem; font-size: 0.9rem; }
+.sidebar-contact { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,180,216,0.2); }
+.sidebar-phone { font-size: 1.25rem; font-weight: 700; color: var(--color-brand-primary); }
+@media (max-width: 1023px) { .content-layout { grid-template-columns: 1fr; } .booking-sidebar { position: static; } }
+</style>

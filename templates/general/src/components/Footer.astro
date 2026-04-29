@@ -1,0 +1,74 @@
+---
+import site from '../content/site.json';
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="footer-logo">{site.clinic_name}</a>
+      <p class="footer-tagline">{site.tagline}</p>
+      <p class="footer-address">{site.address}</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="/services">All Services</a></li>
+        <li><a href="/team">Our Team</a></li>
+        <li><a href="/about">About Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Patients</h4>
+      <ul>
+        <li><a href="/patient-info">New Patients</a></li>
+        <li><a href="/insurance">Insurance</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href={`tel:${site.phone}`}>{site.phone}</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li class="footer-hours">{site.hours}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <p>&copy; {new Date().getFullYear()} {site.clinic_name}. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="/patient-info">Privacy Policy</a>
+        <a href="/patient-info">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+.site-footer {
+  background: var(--color-text-primary);
+  color: rgba(255,255,255,0.7);
+  padding-top: 4rem;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 4rem; }
+.footer-logo { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: white; display: block; margin-bottom: 0.75rem; }
+.footer-tagline { font-size: 0.875rem; color: rgba(255,255,255,0.55); margin-bottom: 0.5rem; }
+.footer-address { font-size: 0.8125rem; color: rgba(255,255,255,0.45); line-height: 1.6; }
+.footer-col h4 { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: white; margin-bottom: 1.25rem; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.625rem; }
+.footer-col a { font-size: 0.875rem; color: rgba(255,255,255,0.6); transition: color var(--transition); }
+.footer-col a:hover { color: var(--color-brand-accent); }
+.footer-hours { font-size: 0.875rem; color: rgba(255,255,255,0.45); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 1.5rem 0;
+}
+.footer-bottom .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-bottom p { font-size: 0.8125rem; color: rgba(255,255,255,0.35); }
+.footer-legal { display: flex; gap: 1.5rem; }
+.footer-legal a { font-size: 0.8125rem; color: rgba(255,255,255,0.35); transition: color var(--transition); }
+.footer-legal a:hover { color: rgba(255,255,255,0.7); }
+@media (max-width: 1023px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 639px) { .footer-grid { grid-template-columns: 1fr; gap: 2rem; } .footer-bottom .container { flex-direction: column; align-items: flex-start; } }
+</style>

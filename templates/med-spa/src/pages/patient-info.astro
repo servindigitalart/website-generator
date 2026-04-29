@@ -1,0 +1,140 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout title={`Patient Information | ${site.clinic_name}`} description={`New client information, forms, and preparation guidelines for ${site.clinic_name}.`}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a><span> / </span><span aria-current="page">Client Information</span></nav>
+      <span class="page-overline">New Clients</span>
+      <h1 class="reveal">Your First Visit</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-grid">
+      <main class="reveal">
+        <div class="gold-rule" style="margin-bottom:2rem;"></div>
+        <h2>What to Expect</h2>
+        <p>Your first visit to {site.clinic_name} is an intimate, unhurried experience. We dedicate ample time to understanding your aesthetic goals before recommending any treatment.</p>
+        <p>Your journey begins with a private consultation — never a sales pitch. Our specialists listen first, then create a personalized roadmap that aligns with your natural beauty and lifestyle.</p>
+
+        <h2 style="margin-top:3rem;">Preparing for Your Visit</h2>
+        <ul class="prep-list">
+          {[
+            "Arrive with a clean face — no heavy makeup",
+            "Bring a list of current medications and supplements",
+            "Avoid blood thinners (aspirin, ibuprofen) 3 days prior to injectables",
+            "Stay well-hydrated the day before your appointment",
+            "Wear comfortable, loose clothing for body treatments",
+            "Plan to arrive 15 minutes early to complete intake forms",
+          ].map(item => (
+            <li>{item}</li>
+          ))}
+        </ul>
+
+        <h2 style="margin-top:3rem;">New Client Forms</h2>
+        <p>To save time on your first visit, you may complete your intake forms in advance. All information is strictly confidential and protected under HIPAA.</p>
+        <div class="form-cards">
+          {[
+            { title: "Medical History Form", desc: "Complete your health history and current medications." },
+            { title: "Consent & Disclosure", desc: "Review and sign your treatment consent agreement." },
+            { title: "Photo Release", desc: "Optional authorization for clinical before/after documentation." },
+          ].map(form => (
+            <div class="form-card">
+              <div class="gold-rule" style="margin-bottom:1rem;width:30px;"></div>
+              <h3>{form.title}</h3>
+              <p>{form.desc}</p>
+              <a href="/contact" class="form-link">Request via Email →</a>
+            </div>
+          ))}
+        </div>
+
+        <h2 style="margin-top:3rem;">Privacy & Confidentiality</h2>
+        <p>Your privacy is paramount. All client information, treatment records, and results are maintained with the strictest confidentiality. We never share client information with third parties, and our studio is designed to ensure complete discretion.</p>
+
+        <h2 style="margin-top:3rem;">Frequently Asked Questions</h2>
+        {[
+          { q: "Is a consultation required before treatment?", a: "Yes, all new clients begin with a private consultation. This ensures we understand your goals and create the most effective, safe treatment plan for you." },
+          { q: "How long is the first consultation?", a: "Initial consultations are typically 45–60 minutes. We never rush — your questions and comfort are our priority." },
+          { q: "What is your privacy policy?", a: "All client information is protected under HIPAA and our internal privacy protocols. We maintain complete discretion and never discuss clients or share any information." },
+          { q: "Do you take photos?", a: "Clinical photography for before/after documentation is optional and requires signed consent. Photos are stored securely and are never used for marketing without explicit written permission." },
+        ].map(faq => (
+          <details class="faq-item">
+            <summary class="faq-q">{faq.q}</summary>
+            <p class="faq-a">{faq.a}</p>
+          </details>
+        ))}
+      </main>
+
+      <aside class="info-sidebar">
+        <div class="sidebar-card">
+          <p class="sidebar-overline">Ready to Begin</p>
+          <h3>Book Your Consultation</h3>
+          <p>Take the first step toward your transformation with a private, no-pressure consultation.</p>
+          <a href="/contact" class="btn btn-ghost" style="width:100%;text-align:center;">Schedule Now</a>
+          <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(201,169,110,0.15);">
+            <a href={`tel:${site.phone}`} class="sidebar-phone">{site.phone}</a>
+          </div>
+        </div>
+
+        <div class="sidebar-card" style="margin-top:1.5rem;">
+          <p class="sidebar-overline">Studio Hours</p>
+          <table class="hours-table">
+            <tbody>
+              <tr><td>Mon – Fri</td><td>9:00 AM – 6:00 PM</td></tr>
+              <tr><td>Saturday</td><td>10:00 AM – 4:00 PM</td></tr>
+              <tr><td>Sunday</td><td>By Appointment</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%; animation: gradientShift 8s ease infinite;
+  padding: 10rem 0 4rem;
+}
+.breadcrumb { font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(245,240,232,0.4); }
+.page-overline { font-size: 0.625rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-text-gold); display: block; margin-bottom: 1rem; }
+.page-hero h1 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0; }
+.content-grid { display: grid; grid-template-columns: 1fr 300px; gap: 5rem; align-items: start; }
+.content-grid h2 { font-family: var(--font-display); color: var(--color-text-primary); margin: 0 0 1rem; font-size: 1.75rem; font-weight: 400; }
+.content-grid p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; font-size: 0.9375rem; }
+.prep-list { color: var(--color-text-secondary); line-height: 2.1; padding-left: 0; list-style: none; margin-bottom: 1rem; }
+.prep-list li { padding-left: 1.5rem; position: relative; font-size: 0.9375rem; }
+.prep-list li::before { content: '—'; position: absolute; left: 0; color: var(--color-text-gold); }
+.form-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem; }
+.form-card { padding: 1.75rem 1.5rem; background: var(--color-surface-light); border-top: 1px solid rgba(201,169,110,0.2); }
+.form-card h3 { font-family: var(--font-display); color: var(--color-text-primary); margin: 0 0 0.625rem; font-size: 1.1rem; font-weight: 400; }
+.form-card p { color: var(--color-text-secondary); font-size: 0.8125rem; line-height: 1.65; margin: 0 0 1rem; }
+.form-link { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--color-text-gold); }
+.faq-item { border-bottom: 1px solid rgba(201,169,110,0.15); }
+.faq-q { cursor: pointer; padding: 1.25rem 0; font-size: 0.9375rem; color: var(--color-text-primary); list-style: none; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::before { content: '+'; margin-right: 0.875rem; color: var(--color-text-gold); }
+details[open] .faq-q::before { content: '−'; }
+.faq-a { padding: 0 0 1.25rem 1.5rem; color: var(--color-text-secondary); line-height: 1.75; margin: 0; font-size: 0.9rem; }
+.info-sidebar { position: sticky; top: 100px; }
+.sidebar-card { background: var(--color-surface-light); border-top: 1px solid var(--color-text-gold); padding: 2.5rem 2rem; }
+.sidebar-overline { font-size: 0.625rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-text-gold); margin: 0 0 0.75rem; display: block; }
+.sidebar-card h3 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0 0 0.875rem; font-size: 1.5rem; }
+.sidebar-card p { color: var(--color-text-secondary); font-size: 0.875rem; margin: 0 0 1.5rem; }
+.sidebar-phone { font-size: 1.125rem; color: var(--color-text-gold); letter-spacing: 0.05em; }
+.hours-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+.hours-table td { padding: 0.5rem 0; color: var(--color-text-secondary); }
+.hours-table td:last-child { text-align: right; }
+@media (max-width: 1023px) { .content-grid { grid-template-columns: 1fr; } .info-sidebar { position: static; } .form-cards { grid-template-columns: 1fr; } }
+</style>

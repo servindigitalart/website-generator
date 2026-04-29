@@ -1,0 +1,33 @@
+---
+const { name, description, slug, number } = Astro.props;
+---
+<div class="flip-card" aria-label={name}>
+  <div class="flip-card-inner">
+    <div class="flip-card-front">
+      <div class="card-icon" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <path d="M16 24h16M24 16v16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3 class="card-front-name">{name}</h3>
+      <span class="card-hint" aria-hidden="true">Hover to learn more</span>
+    </div>
+    <div class="flip-card-back">
+      <p class="card-back-desc">{description}</p>
+      <a href={`/services/${slug}`} class="card-back-link" aria-label={`Learn more about ${name}`}>
+        Learn More →
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+.flip-card { height: 220px; }
+.card-icon { margin-bottom: 1rem; }
+.card-front-name { font-size: 1.125rem; font-weight: 700; margin: 0 0 0.5rem; color: white; }
+.card-hint { font-size: 0.75rem; opacity: 0.7; color: rgba(255,255,255,0.8); }
+.card-back-desc { color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.65; margin: 0 0 1.25rem; }
+.card-back-link { color: var(--color-brand-accent); font-weight: 700; font-size: 0.875rem; }
+.card-back-link:hover { text-decoration: underline; }
+</style>

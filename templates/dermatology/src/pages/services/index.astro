@@ -1,0 +1,102 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+const defaultServices = [
+  { name: "Acne Treatment", description: "Comprehensive acne management including topical therapies, oral medications, and advanced procedures like chemical peels and laser.", page_slug: "acne-treatment", is_featured: true },
+  { name: "Anti-Aging", description: "Restore youthfulness with Botox, dermal fillers, microneedling, and photorejuvenation therapies.", page_slug: "anti-aging", is_featured: true },
+  { name: "Laser Therapy", description: "State-of-the-art laser treatments for skin resurfacing, pigmentation, vascular lesions, and hair removal.", page_slug: "laser-therapy" },
+  { name: "Cosmetic Dermatology", description: "Enhance your natural beauty with expert cosmetic procedures tailored to your skin type.", page_slug: "cosmetic-dermatology" },
+  { name: "Skin Cancer Screening", description: "Comprehensive full-body dermatoscopy and early detection for melanoma and non-melanoma skin cancers.", page_slug: "skin-cancer-screening" },
+  { name: "Eczema & Psoriasis", description: "Evidence-based management of chronic inflammatory skin conditions for long-term relief.", page_slug: "eczema-psoriasis" },
+  { name: "Chemical Peels", description: "Medical-grade peels that refresh, resurface, and brighten skin tone and texture.", page_slug: "chemical-peels" },
+  { name: "Mohs Surgery", description: "Gold standard for skin cancer removal with highest cure rates and tissue preservation.", page_slug: "mohs-surgery" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+---
+<Layout
+  title={`Services | ${site.clinic_name}`}
+  description={`Explore our full range of dermatology services at ${site.clinic_name}.`}
+>
+  <Nav />
+
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true"> / </span>
+        <span aria-current="page">Services</span>
+      </nav>
+      <h1 class="reveal">Our Dermatology Services</h1>
+      <p class="page-hero-sub reveal">Medical and cosmetic dermatology under one roof</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="services-full-grid">
+        {services.map((s: any) => (
+          <a
+            href={`/services/${s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}`}
+            class="service-full-card reveal"
+            aria-label={s.name}
+          >
+            <div class="service-icon-wrap" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M10 16h12M16 10v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h2>{s.name}</h2>
+            <p>{s.description}</p>
+            <span class="card-link-arrow" aria-hidden="true">
+              Learn More →
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(135deg, #4A3F7A, #2D1F5E);
+  padding: 10rem 0 4rem; color: white;
+}
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.breadcrumb a:hover { color: var(--color-brand-secondary); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2.25rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.services-full-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+}
+.service-full-card {
+  display: flex; flex-direction: column;
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(196,168,130,0.2);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-base);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-decoration: none;
+}
+.service-full-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.service-icon-wrap {
+  color: var(--color-brand-primary); margin-bottom: 1.25rem;
+}
+.service-full-card h2 {
+  font-family: var(--font-display); font-size: 1.375rem;
+  color: var(--color-brand-primary); margin: 0 0 0.75rem;
+}
+.service-full-card p { color: var(--color-text-secondary); margin: 0 0 1.5rem; flex: 1; line-height: 1.7; }
+.card-link-arrow { color: var(--color-brand-primary); font-weight: 600; font-size: 0.875rem; }
+@media (max-width: 1023px) { .services-full-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .services-full-grid { grid-template-columns: 1fr; } }
+</style>

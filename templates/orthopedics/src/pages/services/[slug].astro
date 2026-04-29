@@ -1,0 +1,149 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import site from '../../content/site.json';
+
+export async function getStaticPaths() {
+  const defaultServices = [
+    { name: "Joint Replacement", description: "Hip, knee, and shoulder replacement with minimally invasive techniques.", page_slug: "joint-replacement" },
+    { name: "Sports Medicine", description: "Treating athletes of all levels with evidence-based sports medicine.", page_slug: "sports-medicine" },
+    { name: "Spine Surgery", description: "Cutting-edge spinal care from disc herniation to complex deformity.", page_slug: "spine-surgery" },
+    { name: "Shoulder & Elbow", description: "Rotator cuff repair, shoulder instability, and arthroscopic procedures.", page_slug: "shoulder-elbow" },
+    { name: "Foot & Ankle", description: "Comprehensive care for all foot and ankle conditions.", page_slug: "foot-ankle" },
+    { name: "Physical Therapy", description: "Evidence-based rehabilitation to restore function.", page_slug: "physical-therapy" },
+    { name: "Hand & Wrist", description: "Carpal tunnel, trigger finger, and complex hand reconstructions.", page_slug: "hand-wrist" },
+    { name: "Fracture Care", description: "Comprehensive fracture management from emergency care through full rehab.", page_slug: "fracture-care" },
+  ];
+
+  const services: any[] = (site as any).services?.length > 0 ? (site as any).services : defaultServices;
+  return services.map(s => ({
+    params: { slug: s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-') },
+    props: { service: s },
+  }));
+}
+
+const { service } = Astro.props;
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+const slug = Astro.params.slug;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalProcedure",
+  "name": service.name,
+  "description": service.description,
+  "provider": {
+    "@type": "MedicalOrganization",
+    "name": site.clinic_name,
+    "url": siteUrl,
+  }
+};
+
+const faqs = [
+  { q: `What should I expect during my first ${service.name} consultation?`, a: "Your first visit includes a thorough evaluation, review of any imaging, and a detailed discussion of your treatment options. Plan for 45–60 minutes." },
+  { q: "Does insurance cover this procedure?", a: "Most major insurance plans cover medically necessary orthopedic procedures. We recommend verifying your benefits before your appointment." },
+  { q: "What is the recovery timeline?", a: "Recovery varies by procedure and patient. Your specialist will provide a personalized recovery plan at your consultation." },
+  { q: "Are non-surgical options available?", a: "Whenever possible, we explore all conservative treatment options before recommending surgery." },
+];
+---
+<Layout
+  title={`${service.name} | ${site.clinic_name}`}
+  description={`${service.name} at ${site.clinic_name}. ${service.description}`}
+  schema={schema}
+>
+  <Nav />
+
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true"> / </span>
+        <a href="/services">Services</a><span aria-hidden="true"> / </span>
+        <span aria-current="page">{service.name}</span>
+      </nav>
+      <h1>{service.name}</h1>
+      <p class="page-hero-sub">{service.description}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-layout">
+      <main class="service-main">
+        <div class="content-block reveal">
+          <h2>About This Treatment</h2>
+          <p>{service.description} Our board-certified orthopedic specialists use the latest techniques and technology to ensure the best possible outcomes for every patient.</p>
+        </div>
+        <div class="content-block reveal">
+          <h2>Who Is This For?</h2>
+          <p>This treatment is appropriate for patients experiencing chronic pain, reduced mobility, or injuries that haven't responded to conservative care. Your specialist will evaluate whether this is the right approach for your condition.</p>
+        </div>
+        <div class="content-block reveal">
+          <h2>What to Expect</h2>
+          <ul class="expect-list">
+            <li>Comprehensive consultation and imaging review</li>
+            <li>Personalized treatment plan development</li>
+            <li>Pre-procedure preparation guidance</li>
+            <li>Expert surgical or non-surgical intervention</li>
+            <li>Structured rehabilitation program</li>
+          </ul>
+        </div>
+        <div class="content-block reveal">
+          <h2>Frequently Asked Questions</h2>
+          {faqs.map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </main>
+
+      <aside class="booking-sidebar">
+        <div class="booking-card">
+          <h3>Book a Consultation</h3>
+          <p>Ready to take the first step? Schedule your appointment today.</p>
+          <a href="/contact" class="btn btn-accent" style="width:100%;text-align:center;color:white;">Schedule Now</a>
+          <div class="sidebar-contact">
+            <p><strong>Call us:</strong></p>
+            <a href={`tel:${site.phone}`} class="sidebar-phone">{site.phone}</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #0A2E6E, #1565C0); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.breadcrumb a:hover { color: var(--color-brand-accent); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.25rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; max-width: 640px; }
+.content-layout { display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: start; }
+.content-block { margin-bottom: 3rem; }
+.content-block h2 { font-size: 1.625rem; color: var(--color-brand-primary); margin: 0 0 1rem; }
+.content-block p { color: var(--color-text-secondary); line-height: 1.8; }
+.expect-list { color: var(--color-text-secondary); line-height: 2; padding-left: 1.5rem; }
+.faq-item { border-bottom: 1px solid rgba(10,46,110,0.1); margin-bottom: 0; }
+.faq-q {
+  cursor: pointer; padding: 1.25rem 0; font-weight: 600;
+  color: var(--color-brand-primary); list-style: none;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::before { content: '+'; margin-right: 0.75rem; color: var(--color-brand-accent); font-size: 1.25rem; }
+details[open] .faq-q::before { content: '−'; }
+.faq-a { padding: 0 0 1.25rem 1.5rem; color: var(--color-text-secondary); line-height: 1.75; margin: 0; }
+.booking-sidebar { position: sticky; top: 100px; }
+.booking-card {
+  background: var(--color-surface-alt); border-radius: var(--radius-lg);
+  padding: 2rem; border-top: 4px solid var(--color-brand-accent);
+}
+.booking-card h3 { color: var(--color-brand-primary); margin: 0 0 0.75rem; font-size: 1.375rem; }
+.booking-card p { color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+.sidebar-contact { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(10,46,110,0.1); }
+.sidebar-contact p { margin: 0 0 0.25rem; font-size: 0.875rem; color: var(--color-text-secondary); }
+.sidebar-phone { font-size: 1.25rem; font-weight: 700; color: var(--color-brand-accent); }
+@media (max-width: 1023px) { .content-layout { grid-template-columns: 1fr; } .booking-sidebar { position: static; } }
+</style>

@@ -1,0 +1,136 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+export async function getStaticPaths() {
+  const defaultServices = [
+    { name: "Primary Care", description: "Comprehensive preventive and routine care for your whole family.", page_slug: "primary-care" },
+    { name: "Urgent Care", description: "Same-day appointments for non-emergency medical needs.", page_slug: "urgent-care" },
+    { name: "Chronic Disease Management", description: "Ongoing support for diabetes, hypertension, and more.", page_slug: "chronic-disease" },
+    { name: "Preventive Health", description: "Annual wellness exams, screenings, and immunizations.", page_slug: "preventive-health" },
+    { name: "Telehealth", description: "Convenient virtual visits from the comfort of your home.", page_slug: "telehealth" },
+    { name: "Lab & Diagnostics", description: "On-site laboratory testing for fast, accurate results.", page_slug: "lab-diagnostics" },
+  ];
+  const services: any[] = (site as any).services?.length > 0 ? (site as any).services : defaultServices;
+  return services.map(s => ({
+    params: { slug: s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-') },
+    props: { service: s },
+  }));
+}
+
+const { service } = Astro.props;
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalProcedure",
+  "name": service.name,
+  "description": service.description,
+  "provider": { "@type": "MedicalOrganization", "name": site.clinic_name, "url": siteUrl }
+};
+---
+<Layout
+  title={`${service.name} | ${site.clinic_name}`}
+  description={`${service.name} at ${site.clinic_name}. ${service.description}`}
+  schema={schema}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a> / <a href="/services">Services</a> / <span aria-current="page">{service.name}</span>
+      </nav>
+      <span class="page-tag">Medical Service</span>
+      <h1>{service.name}</h1>
+      <p class="hero-sub">{service.description}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-layout">
+      <main>
+        <div class="content-block reveal">
+          <h2>About This Service</h2>
+          <p>{service.description} Our board-certified physicians bring years of specialized experience to every patient encounter, ensuring you receive accurate diagnoses and effective treatment plans.</p>
+          <p>We take a whole-person approach, considering your lifestyle, medical history, and personal goals when designing your care plan.</p>
+        </div>
+        <div class="content-block reveal">
+          <h2>What to Expect</h2>
+          <ul class="expect-list">
+            <li>A thorough intake review before your appointment</li>
+            <li>One-on-one time with your physician — never rushed</li>
+            <li>Clear explanation of findings and next steps</li>
+            <li>A care plan tailored to your specific needs</li>
+            <li>Follow-up support and access to your care team</li>
+          </ul>
+        </div>
+        <div class="content-block reveal">
+          <h2>Frequently Asked Questions</h2>
+          {[
+            { q: `Do I need a referral for ${service.name}?`, a: "Most services do not require a referral. We accept walk-ins and same-day appointments for many conditions. Call us to confirm your specific situation." },
+            { q: "How long is a typical appointment?", a: "Initial visits are typically 45–60 minutes. Follow-up appointments are usually 20–30 minutes, depending on your needs." },
+            { q: "Do you accept my insurance?", a: "We accept most major insurance plans. Please contact our office or check our Insurance page to verify your coverage." },
+          ].map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </main>
+
+      <aside class="booking-sidebar">
+        <div class="booking-card">
+          <p class="card-tag">Ready to get started?</p>
+          <h3>Book an Appointment</h3>
+          <p>Same-day and next-day appointments often available.</p>
+          <a href="/contact" class="btn btn-primary" style="width:100%;text-align:center;">Schedule Now</a>
+          <div class="sidebar-divider">
+            <a href={`tel:${site.phone}`} class="sidebar-phone">{site.phone}</a>
+            <p class="sidebar-hours">{site.hours}</p>
+          </div>
+        </div>
+        <div class="insurance-note">
+          <p>Most major insurance plans accepted. <a href="/insurance">View insurance info →</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.hero-sub { font-size: 1.125rem; color: rgba(255,255,255,0.8); margin-top: 1rem; max-width: 600px; }
+.content-layout { display: grid; grid-template-columns: 1fr 300px; gap: 5rem; align-items: start; }
+.content-block { margin-bottom: 3rem; }
+.content-block h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+.content-block p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; font-size: 0.9375rem; }
+.expect-list { color: var(--color-text-secondary); line-height: 2; padding-left: 0; list-style: none; }
+.expect-list li { padding-left: 1.5rem; position: relative; font-size: 0.9375rem; }
+.expect-list li::before { content: '✓'; position: absolute; left: 0; color: var(--color-brand-accent); font-weight: 700; }
+.faq-item { border-bottom: 1px solid var(--color-border); }
+.faq-q { cursor: pointer; padding: 1.25rem 0; font-size: 0.9375rem; font-weight: 600; color: var(--color-text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '+'; color: var(--color-brand-primary); font-size: 1.25rem; font-weight: 400; flex-shrink: 0; }
+details[open] .faq-q::after { content: '−'; }
+.faq-a { padding: 0 0 1.25rem; color: var(--color-text-secondary); line-height: 1.75; font-size: 0.9rem; }
+.booking-sidebar { position: sticky; top: 100px; }
+.booking-card {
+  background: white; border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+.card-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; color: var(--color-brand-primary); margin-bottom: 0.5rem; }
+.booking-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+.booking-card p { color: var(--color-text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem; }
+.sidebar-divider { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+.sidebar-phone { display: block; font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-brand-primary); }
+.sidebar-hours { font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+.insurance-note { margin-top: 1rem; padding: 1rem; background: rgba(0,212,170,0.08); border-radius: var(--radius-md); border-left: 3px solid var(--color-brand-accent); }
+.insurance-note p { font-size: 0.875rem; color: var(--color-text-secondary); margin: 0; }
+@media (max-width: 1023px) { .content-layout { grid-template-columns: 1fr; } .booking-sidebar { position: static; } }
+</style>

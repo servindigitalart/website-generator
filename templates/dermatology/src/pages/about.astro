@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout
+  title={`About Us | ${site.clinic_name}`}
+  description={`Learn about ${site.clinic_name} — our story, mission, and commitment to exceptional dermatological care.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a> <span> / </span> <span aria-current="page">About</span>
+      </nav>
+      <h1 class="reveal">About {site.clinic_name}</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container about-story">
+      <div class="about-text reveal">
+        <span class="section-tag">Our Story</span>
+        <h2>Excellence in Dermatology</h2>
+        <span class="gold-rule" style="margin-bottom:1.5rem"></span>
+        <p>Founded with a commitment to providing world-class dermatological care, {site.clinic_name} has grown into a trusted resource for patients seeking both medical and cosmetic skin treatments. Our philosophy is simple: every patient deserves personalized, evidence-based care delivered with compassion.</p>
+        <p>Our board-certified dermatologists combine deep clinical expertise with the latest technologies to achieve outstanding results across a full spectrum of skin conditions and aesthetic goals.</p>
+      </div>
+      <div class="about-image reveal" aria-hidden="true">
+        <div class="about-img-placeholder"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section values-section">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">What Guides Us</span>
+        <h2>Our Values</h2>
+        <span class="gold-rule"></span>
+      </header>
+      <div class="values-grid">
+        {[
+          { icon: "⬡", title: "Clinical Excellence", desc: "Board-certified physicians. Evidence-based treatments. Continuous education." },
+          { icon: "◇", title: "Patient-First Care", desc: "Every decision centers on your health, safety, and aesthetic goals." },
+          { icon: "○", title: "Inclusive Beauty", desc: "Expert care for every skin type, tone, and concern." },
+        ].map(v => (
+          <div class="value-card reveal">
+            <span class="value-icon" aria-hidden="true">{v.icon}</span>
+            <h3>{v.title}</h3>
+            <p>{v.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Our Space</span>
+        <h2>The Clinic</h2>
+        <span class="gold-rule"></span>
+      </header>
+      <div class="gallery-grid">
+        {[1,2,3,4].map(n => (
+          <div class="gallery-item reveal" aria-label={`Clinic photo ${n}`}></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #4A3F7A, #2D1F5E); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0; font-size: clamp(2.25rem, 4vw, 3.5rem); }
+.section-tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-brand-secondary); display: block; margin-bottom: 0.75rem; }
+.about-story { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.about-text h2 { font-family: var(--font-display); font-size: 2.25rem; color: var(--color-brand-primary); margin: 0 0 1rem; }
+.about-text p { color: var(--color-text-secondary); line-height: 1.8; margin: 0 0 1rem; }
+.about-img-placeholder { height: 480px; border-radius: var(--radius-xl); background: linear-gradient(135deg, #4A3F7A22, #C4A88222); border: 1px solid rgba(196,168,130,0.2); }
+.values-section { background: var(--color-surface-alt); }
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-header h2 { margin: 0 0 1rem; }
+.section-header .gold-rule { margin: 0 auto; }
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.value-card { text-align: center; padding: 3rem 2rem; background: var(--color-surface-base); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); }
+.value-icon { font-size: 2.5rem; display: block; margin-bottom: 1.25rem; color: var(--color-brand-secondary); }
+.value-card h3 { font-family: var(--font-display); font-size: 1.25rem; color: var(--color-brand-primary); margin: 0 0 0.75rem; }
+.value-card p { color: var(--color-text-secondary); line-height: 1.7; margin: 0; }
+.gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+.gallery-item { height: 240px; border-radius: var(--radius-lg); background: linear-gradient(135deg, #4A3F7A18, #C4A88218); border: 1px solid rgba(196,168,130,0.15); }
+@media (max-width: 1023px) { .about-story { grid-template-columns: 1fr; } .values-grid { grid-template-columns: 1fr; } .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .gallery-grid { grid-template-columns: 1fr; } }
+</style>

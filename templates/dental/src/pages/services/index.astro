@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+const defaultServices = [
+  { name: "Teeth Whitening", description: "Professional in-office and take-home whitening for a radiant smile.", page_slug: "teeth-whitening" },
+  { name: "Dental Implants", description: "Permanent tooth replacement that looks and functions like natural teeth.", page_slug: "dental-implants" },
+  { name: "Invisalign", description: "Clear aligner therapy for straighter teeth without metal braces.", page_slug: "invisalign" },
+  { name: "Cosmetic Bonding", description: "Repair chips, cracks, and gaps with tooth-colored composite resin.", page_slug: "cosmetic-bonding" },
+  { name: "Emergency Dental", description: "Same-day urgent care for toothaches, broken teeth, and dental trauma.", page_slug: "emergency-dental" },
+  { name: "Family Dentistry", description: "Comprehensive preventive and restorative care for patients of all ages.", page_slug: "family-dentistry" },
+  { name: "Crowns & Bridges", description: "Durable restorations to protect damaged teeth and replace missing ones.", page_slug: "crowns-bridges" },
+  { name: "Root Canal Therapy", description: "Comfortable, effective treatment to save infected or damaged teeth.", page_slug: "root-canal" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+---
+<Layout
+  title={`Dental Services | ${site.clinic_name}`}
+  description={`Explore our full range of dental services at ${site.clinic_name}.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">Services</span>
+      </nav>
+      <h1 class="reveal">Our Dental Services</h1>
+      <p class="page-hero-sub reveal">Comprehensive care for a lifetime of healthy smiles</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="services-grid">
+        {services.map((s: any) => (
+          <a href={`/services/${s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}`} class="service-card reveal">
+            <div class="service-icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="1.5"/><path d="M11 18h14M18 11v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <h2>{s.name}</h2>
+            <p>{s.description}</p>
+            <span class="card-link">Learn More →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #023E8A, #0077B6); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.breadcrumb a:hover { color: var(--color-brand-primary); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.service-card {
+  display: flex; flex-direction: column; padding: 2.5rem 2rem;
+  border: 2px solid var(--color-surface-alt); border-radius: var(--radius-lg);
+  background: white; transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: var(--color-brand-primary); }
+.service-icon { color: var(--color-brand-primary); margin-bottom: 1.25rem; }
+.service-card h2 { font-size: 1.25rem; font-weight: 700; color: var(--color-brand-secondary); margin: 0 0 0.75rem; }
+.service-card p { color: var(--color-text-secondary); margin: 0 0 1.5rem; flex: 1; line-height: 1.7; }
+.card-link { color: var(--color-brand-accent); font-weight: 700; font-size: 0.875rem; }
+@media (max-width: 1023px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .services-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,144 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout
+  title={`Patient Information | ${site.clinic_name}`}
+  description={`New and returning patient information for ${site.clinic_name}. Forms, what to expect, and FAQs.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">Patient Info</span>
+      </nav>
+      <h1 class="reveal">Patient Information</h1>
+      <p class="page-hero-sub reveal">Everything you need to prepare for your visit</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container info-layout">
+      <main>
+        <div class="info-block reveal">
+          <h2>New Patient Checklist</h2>
+          <ul class="checklist">
+            <li>Valid photo ID and insurance card</li>
+            <li>Complete new patient registration form (available below)</li>
+            <li>List of current medications and dosages</li>
+            <li>Any relevant X-rays, MRIs, or imaging (or facility info)</li>
+            <li>Referral form if required by your insurance</li>
+            <li>List of previous surgeries or relevant medical history</li>
+            <li>Arrive 15 minutes early for paperwork</li>
+          </ul>
+        </div>
+
+        <div class="info-block reveal">
+          <h2>Patient Forms</h2>
+          <div class="forms-grid">
+            {[
+              "New Patient Registration",
+              "Medical History Form",
+              "HIPAA Acknowledgment",
+              "Insurance Authorization",
+              "Financial Policy",
+              "Pain Assessment Form",
+            ].map(form => (
+              <div class="form-card">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.5"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span>{form}</span>
+                <a href="#" class="download-link" aria-label={`Download ${form}`}>Download PDF</a>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="info-block reveal">
+          <h2>What to Expect at Your First Visit</h2>
+          <ol class="numbered-list">
+            <li>Check-in and paperwork review (allow 15 minutes)</li>
+            <li>Nursing assessment: vitals and medical history review</li>
+            <li>Imaging review and physical examination by your specialist</li>
+            <li>Detailed discussion of your diagnosis and treatment options</li>
+            <li>Treatment planning and scheduling next steps</li>
+          </ol>
+        </div>
+
+        <div class="info-block reveal">
+          <h2>Frequently Asked Questions</h2>
+          {[
+            { q: "How long will my first appointment take?", a: "Plan for 60–90 minutes for your initial consultation. Complex cases may require additional time." },
+            { q: "Can I bring someone with me?", a: "Yes, we encourage patients to bring a family member or caregiver, especially for surgical consultations." },
+            { q: "What if I need to cancel or reschedule?", a: "Please notify us at least 24 hours in advance. Call our office directly at " + site.phone + "." },
+          ].map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </main>
+
+      <aside class="info-sidebar">
+        <div class="contact-quick">
+          <h3>Quick Contact</h3>
+          <a href={`tel:${site.phone}`} class="quick-phone">{site.phone}</a>
+          <p>{site.hours}</p>
+          <a href="/contact" class="btn btn-accent" style="color:white;width:100%;text-align:center;margin-top:1rem;">Book Appointment</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #0A2E6E, #1565C0); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.info-layout { display: grid; grid-template-columns: 1fr 300px; gap: 4rem; align-items: start; }
+.info-block { margin-bottom: 3rem; }
+.info-block h2 { color: var(--color-brand-primary); margin: 0 0 1.25rem; font-size: 1.625rem; }
+.checklist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.checklist li {
+  padding: 0.875rem 1rem 0.875rem 3rem; position: relative;
+  background: var(--color-surface-alt); border-radius: var(--radius-md);
+  color: var(--color-text-secondary); font-size: 0.9375rem;
+}
+.checklist li::before {
+  content: '✓'; position: absolute; left: 1rem;
+  color: var(--color-brand-accent); font-weight: 700;
+}
+.forms-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.form-card {
+  display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;
+  padding: 1.25rem; border: 1px solid rgba(10,46,110,0.12);
+  border-radius: var(--radius-md); background: var(--color-surface-base);
+  color: var(--color-brand-primary);
+}
+.form-card svg { color: var(--color-brand-accent); flex-shrink: 0; }
+.form-card span { font-weight: 600; font-size: 0.9rem; flex: 1; }
+.download-link { font-size: 0.8rem; color: var(--color-brand-accent); font-weight: 600; }
+.numbered-list { color: var(--color-text-secondary); line-height: 2; padding-left: 1.5rem; }
+.numbered-list li { margin-bottom: 0.5rem; }
+.faq-item { border-bottom: 1px solid rgba(10,46,110,0.1); }
+.faq-q { cursor: pointer; padding: 1.25rem 0; font-weight: 600; color: var(--color-brand-primary); list-style: none; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::before { content: '+'; margin-right: 0.75rem; color: var(--color-brand-accent); font-size: 1.25rem; }
+details[open] .faq-q::before { content: '−'; }
+.faq-a { padding: 0 0 1.25rem 1.5rem; color: var(--color-text-secondary); line-height: 1.75; margin: 0; }
+.info-sidebar { position: sticky; top: 100px; }
+.contact-quick { background: var(--color-surface-alt); border-radius: var(--radius-lg); padding: 2rem; border-top: 4px solid var(--color-brand-accent); }
+.contact-quick h3 { color: var(--color-brand-primary); margin: 0 0 1rem; }
+.quick-phone { font-size: 1.375rem; font-weight: 700; color: var(--color-brand-accent); display: block; margin-bottom: 0.5rem; }
+.contact-quick p { color: var(--color-text-secondary); font-size: 0.875rem; margin: 0; }
+@media (max-width: 1023px) { .info-layout { grid-template-columns: 1fr; } .info-sidebar { position: static; } }
+@media (max-width: 639px) { .forms-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,47 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+const defaultServices = [
+  { name: "Primary Care", description: "Comprehensive preventive and routine care for your whole family.", page_slug: "primary-care" },
+  { name: "Urgent Care", description: "Same-day appointments for non-emergency medical needs.", page_slug: "urgent-care" },
+  { name: "Chronic Disease Management", description: "Ongoing support for diabetes, hypertension, and more.", page_slug: "chronic-disease" },
+  { name: "Preventive Health", description: "Annual wellness exams, screenings, and immunizations.", page_slug: "preventive-health" },
+  { name: "Telehealth", description: "Convenient virtual visits from the comfort of your home.", page_slug: "telehealth" },
+  { name: "Lab & Diagnostics", description: "On-site laboratory testing for fast, accurate results.", page_slug: "lab-diagnostics" },
+];
+const services = (site as any).services?.length > 0 ? (site as any).services : defaultServices;
+---
+<Layout title={`Services | ${site.clinic_name}`} description={`Explore the full range of medical services offered at ${site.clinic_name}.`}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a> / <span aria-current="page">Services</span></nav>
+      <span class="page-tag">What We Offer</span>
+      <h1>Our Medical Services</h1>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="services-grid">
+        {services.map((s: any, i: number) => (
+          <div class={`reveal reveal-delay-${(i % 3) + 1}`}>
+            <ServiceCard {...s} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+@media (max-width: 1023px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .services-grid { grid-template-columns: 1fr; } }
+</style>

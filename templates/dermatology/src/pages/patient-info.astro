@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const checklist = [
+  "Valid photo ID",
+  "Insurance card (primary and secondary if applicable)",
+  "List of current medications and dosages",
+  "Medical history relevant to your skin concerns",
+  "Photos of skin concerns (if existing for comparison)",
+  "Completed new patient forms (link below)",
+];
+const faqs = [
+  { q: "How early should I arrive for my first appointment?", a: "Please arrive 15 minutes early to allow time for completing any remaining paperwork and getting acquainted with our clinic." },
+  { q: "What should I avoid before my skin appointment?", a: "Avoid applying heavy makeup, lotions, or skincare products to the area of concern. Come with clean, product-free skin if possible." },
+  { q: "How long does a new patient appointment take?", a: "Initial consultations are typically 45–60 minutes. This allows your dermatologist to conduct a thorough evaluation and discuss your treatment plan." },
+  { q: "Will I receive a treatment plan at my first visit?", a: "Yes. Your dermatologist will provide a personalized treatment plan at the conclusion of your initial consultation." },
+];
+---
+<Layout
+  title={`Patient Information | ${site.clinic_name}`}
+  description={`New patient information for ${site.clinic_name}. What to bring, what to expect, and downloadable forms.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a> <span> / </span> <span aria-current="page">Patient Info</span>
+      </nav>
+      <h1 class="reveal">Patient Information</h1>
+      <p class="page-hero-sub reveal">Everything you need for a smooth first visit</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container pi-grid">
+      <div>
+        <div class="pi-block reveal">
+          <h2>New Patient Checklist</h2>
+          <ul class="checklist" role="list" aria-label="New patient checklist">
+            {checklist.map(item => (
+              <li class="checklist-item">
+                <span class="check-icon" aria-hidden="true">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="pi-block reveal">
+          <h2>Downloadable Forms</h2>
+          <ul class="forms-list" role="list">
+            {["New Patient Registration","Medical History Form","HIPAA Consent Form","Insurance Authorization"].map(f => (
+              <li>
+                <a href="#" class="form-link" aria-label={`Download ${f}`}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M10 3v10M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M3 17h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  {f}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <div class="pi-block reveal">
+          <h2>What to Expect</h2>
+          <ol class="expect-list">
+            <li><strong>Welcome &amp; Registration</strong><p>Our front desk team will greet you, verify your information, and complete any remaining paperwork.</p></li>
+            <li><strong>Medical History Review</strong><p>Your provider will review your skin history, concerns, and goals in detail.</p></li>
+            <li><strong>Comprehensive Skin Exam</strong><p>A thorough examination of your skin, including areas of specific concern.</p></li>
+            <li><strong>Personalized Treatment Plan</strong><p>Your dermatologist will explain findings and recommend a customized treatment approach.</p></li>
+          </ol>
+        </div>
+
+        <div class="pi-block reveal" aria-labelledby="pi-faq-heading">
+          <h2 id="pi-faq-heading">Frequently Asked Questions</h2>
+          {faqs.map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #4A3F7A, #2D1F5E); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2.25rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); margin: 0; }
+.pi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+.pi-block { margin-bottom: 3rem; }
+.pi-block h2 { font-family: var(--font-display); font-size: 1.75rem; color: var(--color-brand-primary); margin: 0 0 1.5rem; border-bottom: 2px solid var(--color-brand-secondary); padding-bottom: 0.75rem; }
+.checklist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.875rem; }
+.checklist-item { display: flex; align-items: center; gap: 1rem; font-size: 0.9375rem; color: var(--color-text-secondary); }
+.check-icon { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--color-brand-secondary); color: white; font-size: 0.75rem; flex-shrink: 0; }
+.forms-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.form-link { display: flex; align-items: center; gap: 0.75rem; color: var(--color-brand-primary); font-weight: 500; padding: 0.875rem 1rem; border: 1px solid rgba(196,168,130,0.2); border-radius: var(--radius-md); transition: background 0.2s; }
+.form-link:hover { background: var(--color-surface-alt); }
+.expect-list { list-style: none; padding: 0; margin: 0; counter-reset: steps; }
+.expect-list li { counter-increment: steps; padding: 1.25rem 1.25rem 1.25rem 3.5rem; position: relative; margin-bottom: 1rem; background: var(--color-surface-alt); border-radius: var(--radius-md); }
+.expect-list li::before { content: counter(steps); position: absolute; left: 1rem; top: 1.25rem; width: 24px; height: 24px; border-radius: 50%; background: var(--color-brand-primary); color: white; font-size: 0.8125rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.expect-list strong { display: block; color: var(--color-brand-primary); margin-bottom: 0.25rem; }
+.expect-list p { color: var(--color-text-secondary); margin: 0; font-size: 0.9rem; }
+.faq-item { border-bottom: 1px solid rgba(196,168,130,0.2); padding: 1rem 0; }
+.faq-q { font-weight: 600; color: var(--color-text-primary); cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: "+"; color: var(--color-brand-primary); }
+details[open] .faq-q::after { content: "−"; }
+.faq-a { color: var(--color-text-secondary); margin: 0.75rem 0 0; line-height: 1.7; font-size: 0.9rem; }
+@media (max-width: 1023px) { .pi-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,119 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": site.clinic_name,
+  "telephone": site.phone,
+  "email": site.email,
+  "address": { "@type": "PostalAddress", "streetAddress": site.address },
+  "openingHours": site.hours,
+  "url": siteUrl,
+};
+---
+<Layout title={`Contact | ${site.clinic_name}`} description={`Book your private consultation at ${site.clinic_name}.`} schema={schema}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a><span> / </span><span aria-current="page">Contact</span></nav>
+      <span class="page-overline">Private Consultation</span>
+      <h1 class="reveal">Begin Your Journey</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <div class="reveal">
+        <div class="gold-rule" style="margin-bottom:2rem;"></div>
+        <h2>Schedule a Consultation</h2>
+        <p class="form-intro">All consultations are strictly confidential and conducted in our private studio.</p>
+        <form class="contact-form" name="contact" method="POST" data-netlify="true" action="/contact?success=true">
+          <input type="hidden" name="form-name" value="contact" />
+          <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" name="name" required /></div>
+          <div class="form-row">
+            <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" required /></div>
+            <div class="form-group"><label for="phone">Phone</label><input type="tel" id="phone" name="phone" /></div>
+          </div>
+          <div class="form-group">
+            <label for="service">Treatment of Interest</label>
+            <select id="service" name="service">
+              <option value="">Select a treatment</option>
+              <option>Botox & Fillers</option>
+              <option>Laser Resurfacing</option>
+              <option>Chemical Peels</option>
+              <option>Microneedling</option>
+              <option>Body Contouring</option>
+              <option>IV Therapy</option>
+              <option>Consultation Only</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Tell us about your goals</label>
+            <textarea id="message" name="message" rows="5" placeholder="Share what you'd like to achieve..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-ghost cta-magnetic" style="width:100%;">Submit Request</button>
+        </form>
+      </div>
+
+      <aside class="contact-info reveal">
+        <div class="gold-rule" style="margin-bottom:2rem;"></div>
+        <h2>Studio Information</h2>
+        <div class="info-block"><h3>Address</h3><address>{site.address}</address></div>
+        <div class="info-block"><h3>Phone</h3><a href={`tel:${site.phone}`} class="info-phone">{site.phone}</a></div>
+        <div class="info-block"><h3>Email</h3><a href={`mailto:${site.email}`}>{site.email}</a></div>
+        <div class="info-block">
+          <h3>Studio Hours</h3>
+          <table class="hours-table"><tbody>
+            <tr><td>Monday – Friday</td><td>9:00 AM – 6:00 PM</td></tr>
+            <tr><td>Saturday</td><td>10:00 AM – 4:00 PM</td></tr>
+            <tr><td>Sunday</td><td>By Appointment</td></tr>
+          </tbody></table>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%; animation: gradientShift 8s ease infinite;
+  padding: 10rem 0 4rem;
+}
+.breadcrumb { font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(245,240,232,0.4); }
+.page-overline { font-size: 0.625rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-text-gold); display: block; margin-bottom: 1rem; }
+.page-hero h1 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0; }
+.contact-grid { display: grid; grid-template-columns: 1fr 380px; gap: 6rem; align-items: start; }
+.contact-grid h2 { font-family: var(--font-display); color: var(--color-text-primary); margin: 0 0 0.75rem; font-size: 1.75rem; font-weight: 400; }
+.form-intro { font-family: var(--font-caption); font-style: italic; color: var(--color-text-secondary); margin: 0 0 2rem; }
+.form-group { margin-bottom: 1.75rem; }
+.form-group label { display: block; font-size: 0.625rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem; color: var(--color-text-secondary); }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 0.875rem 0; background: transparent;
+  border: none; border-bottom: 1px solid rgba(201,169,110,0.3);
+  font-family: var(--font-body); font-size: 1rem; color: var(--color-text-primary);
+  outline: none; transition: border-color 0.3s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-bottom-color: var(--color-text-gold); }
+.form-group select option { background: var(--color-surface-alt); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.info-block { margin-bottom: 2rem; }
+.info-block h3 { font-size: 0.625rem; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-text-gold); margin: 0 0 0.75rem; }
+.info-block address { font-style: normal; color: var(--color-text-secondary); line-height: 1.75; font-size: 0.9rem; }
+.info-block a { color: var(--color-text-secondary); transition: color 0.2s; }
+.info-block a:hover { color: var(--color-text-gold); }
+.info-phone { font-size: 1.25rem; color: var(--color-text-gold) !important; letter-spacing: 0.05em; }
+.hours-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.hours-table td { padding: 0.4rem 0; color: var(--color-text-secondary); }
+.hours-table td:last-child { text-align: right; }
+@media (max-width: 1023px) { .contact-grid { grid-template-columns: 1fr; gap: 4rem; } }
+@media (max-width: 639px) { .form-row { grid-template-columns: 1fr; } }
+</style>

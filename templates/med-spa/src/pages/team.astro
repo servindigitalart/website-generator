@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const defaultDoctors = [
+  { name: "Dr. Alexandra Voss", title: "MD, ABAAM", specialty: "Medical Aesthetics Director", bio: "Board-certified physician with 15 years crafting natural, results-driven aesthetic outcomes for discerning clients." },
+  { name: "Dr. Isabelle Laurent", title: "NP-BC", specialty: "Injectable Specialist", bio: "Advanced injector trained in Paris and New York, renowned for her artistic approach to facial harmony." },
+  { name: "Dr. Naomi Tanaka", title: "RN, CANS", specialty: "Laser & Skin Specialist", bio: "Expert in advanced laser technologies and medical-grade skincare protocols for all skin types." },
+];
+const doctors = site.doctors.length > 0 ? site.doctors : defaultDoctors;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": doctors.map((d: any) => ({
+    "@type": "Physician",
+    "name": d.name,
+    "medicalSpecialty": d.specialty,
+    "worksFor": { "@type": "MedicalOrganization", "name": site.clinic_name },
+  }))
+};
+---
+<Layout title={`Our Team | ${site.clinic_name}`} description={`Meet the aesthetic specialists at ${site.clinic_name}.`} schema={schema}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a><span> / </span><span aria-current="page">Our Team</span></nav>
+      <span class="page-overline">The Artists</span>
+      <h1 class="reveal">Meet Our Specialists</h1>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="team-grid">
+        {doctors.map((d: any) => <DoctorCard {...d} />)}
+      </div>
+    </div>
+  </section>
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%; animation: gradientShift 8s ease infinite;
+  padding: 10rem 0 4rem;
+}
+.breadcrumb { font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(245,240,232,0.4); }
+.breadcrumb a:hover { color: var(--color-text-gold); }
+.page-overline { font-size: 0.625rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-text-gold); display: block; margin-bottom: 1rem; }
+.page-hero h1 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0; }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+@media (max-width: 1023px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .team-grid { grid-template-columns: 1fr; } }
+</style>

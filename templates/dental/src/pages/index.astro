@@ -1,0 +1,212 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "@id": `${siteUrl}/#website`, "url": siteUrl, "name": site.clinic_name },
+    {
+      "@type": "MedicalOrganization",
+      "@id": `${siteUrl}/#org`,
+      "name": site.clinic_name,
+      "url": siteUrl,
+      "telephone": site.phone,
+      "email": site.email,
+      "address": { "@type": "PostalAddress", "streetAddress": site.address },
+      "medicalSpecialty": "Dentistry",
+    }
+  ]
+};
+
+const defaultServices = [
+  { name: "Teeth Whitening", description: "Professional in-office and take-home whitening for a radiant smile.", page_slug: "teeth-whitening" },
+  { name: "Dental Implants", description: "Permanent tooth replacement that looks and functions like natural teeth.", page_slug: "dental-implants" },
+  { name: "Invisalign", description: "Clear aligner therapy for straighter teeth without metal braces.", page_slug: "invisalign" },
+  { name: "Cosmetic Bonding", description: "Repair chips, cracks, and gaps with tooth-colored composite resin.", page_slug: "cosmetic-bonding" },
+  { name: "Emergency Dental", description: "Same-day urgent care for toothaches, broken teeth, and dental trauma.", page_slug: "emergency-dental" },
+  { name: "Family Dentistry", description: "Comprehensive preventive and restorative care for patients of all ages.", page_slug: "family-dentistry" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+
+const defaultDoctors = [
+  { name: "Dr. Emily Chen", title: "DDS", specialty: "Cosmetic & General Dentistry", bio: "Specializing in smile transformations with a gentle, patient-first approach." },
+  { name: "Dr. Marcus Williams", title: "DMD, MSD", specialty: "Orthodontics & Invisalign", bio: "Expert in clear aligner therapy and traditional orthodontic treatment." },
+  { name: "Dr. Sofia Reyes", title: "DDS", specialty: "Pediatric & Family Dentistry", bio: "Creating positive dental experiences for children and families since 2010." },
+];
+const doctors = site.doctors.length > 0 ? site.doctors : defaultDoctors;
+
+const testimonials = [
+  { quote: "I was terrified of dentists for years. The team made me feel completely at ease and my smile has never looked better.", patient: "Jessica M.", treatment: "Teeth Whitening + Bonding", rating: 5 },
+  { quote: "Getting Invisalign here was the best decision I ever made. Clear communication every step of the way.", patient: "David K.", treatment: "Invisalign", rating: 5 },
+];
+
+const insuranceNames = ["Aetna", "BlueCross", "Cigna", "Delta Dental", "Humana", "MetLife", "United Healthcare", "Anthem", "Guardian", "Principal"];
+---
+<Layout
+  title={`${site.clinic_name} | Creating Beautiful Smiles`}
+  description={`${site.clinic_name} — ${site.tagline}. Expert dental care for the whole family.`}
+  schema={schema}
+>
+  <Nav />
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container hero-content">
+      <p class="hero-overline hero-animate">CREATING BEAUTIFUL SMILES</p>
+      <h1 id="hero-heading" class="hero-heading hero-animate">
+        {site.hero_headline || 'Your Smile Deserves the Best'}
+      </h1>
+      <p class="hero-sub hero-animate">{site.hero_subtext || 'Friendly, expert dental care for the whole family. We make every visit comfortable.'}</p>
+      <div class="hero-ctas hero-animate">
+        <a href="/contact" class="btn btn-primary hero-cta">Book Your Smile Consultation</a>
+        <a href="/services" class="btn btn-ghost-coral">View Our Services</a>
+      </div>
+      <div class="floating-badges" aria-label="Practice highlights">
+        <div class="floating-badge">⭐ 4.9 Google Rating</div>
+        <div class="floating-badge">😊 2,000+ Happy Patients</div>
+      </div>
+    </div>
+    <div class="hero-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section services-section" aria-labelledby="services-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">What We Offer</span>
+        <h2 id="services-heading">Our Dental Services</h2>
+        <div class="teal-rule"></div>
+      </header>
+      <div class="services-grid">
+        {services.slice(0, 6).map((s: any, i: number) => (
+          <ServiceCard
+            number={String(i + 1).padStart(2, '0')}
+            name={s.name}
+            description={s.description}
+            slug={s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}
+          />
+        ))}
+      </div>
+      <div style="text-align:center;margin-top:3rem;" class="reveal">
+        <a href="/services" class="btn btn-primary">View All Services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSURANCE MARQUEE -->
+  <section class="insurance-section" aria-label="Accepted insurance plans">
+    <div class="container">
+      <p class="insurance-heading reveal">We Accept All Major Insurance Plans</p>
+    </div>
+    <div class="marquee-track" aria-hidden="true">
+      <div class="marquee-inner">
+        {[...insuranceNames, ...insuranceNames].map(name => (
+          <span class="marquee-item">{name}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section testimonials-section" aria-labelledby="testimonials-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Patient Stories</span>
+        <h2 id="testimonials-heading">What Our Patients Say</h2>
+        <div class="teal-rule"></div>
+      </header>
+      <div class="testimonials-grid">
+        {testimonials.map(t => <TestimonialCard {...t} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCTORS -->
+  <section class="section doctors-section" aria-labelledby="doctors-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Meet the Team</span>
+        <h2 id="doctors-heading">Your Dental Family</h2>
+        <div class="teal-rule"></div>
+      </header>
+      <div class="doctors-grid">
+        {doctors.slice(0, 3).map((d: any) => <DoctorCard {...d} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+/* HERO */
+.hero {
+  background: linear-gradient(160deg, var(--color-surface-alt) 0%, white 60%);
+  padding: 10rem 0 0; position: relative; overflow: hidden;
+}
+.hero-content {
+  position: relative; z-index: 1;
+  max-width: 700px; text-align: center; margin: 0 auto;
+  padding-bottom: 4rem;
+}
+.hero-overline {
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--color-brand-primary);
+  margin: 0 0 1rem; display: block;
+}
+.hero-heading {
+  font-size: clamp(2.5rem, 6vw, 4.25rem); font-weight: 700;
+  color: var(--color-brand-secondary);
+  margin: 0 0 1.25rem; line-height: 1.15;
+}
+.hero-sub {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: var(--color-text-secondary); margin: 0 0 2.5rem; line-height: 1.7;
+}
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
+.floating-badges { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+.floating-badge {
+  padding: 0.625rem 1.25rem; background: white;
+  border: 2px solid var(--color-brand-primary); border-radius: var(--radius-xl);
+  font-weight: 600; font-size: 0.875rem; color: var(--color-brand-secondary);
+  box-shadow: var(--shadow-sm);
+}
+.hero-wave {
+  width: 100%; line-height: 0; margin-top: -2px;
+}
+.hero-wave svg { display: block; width: 100%; height: 60px; }
+
+/* INSURANCE */
+.insurance-section { padding: 3rem 0; background: var(--color-surface-alt); }
+.insurance-heading { text-align: center; font-weight: 700; color: var(--color-brand-secondary); margin: 0 0 2rem; font-size: 1.125rem; }
+
+/* GRIDS */
+.services-section { background: white; }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.testimonials-section { background: var(--color-surface-alt); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+.doctors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+
+/* Responsive */
+@media (max-width: 1023px) {
+  .services-grid, .doctors-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 639px) {
+  .services-grid, .doctors-grid, .testimonials-grid { grid-template-columns: 1fr; }
+  .hero-ctas { flex-direction: column; align-items: center; }
+}
+</style>

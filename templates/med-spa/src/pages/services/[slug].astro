@@ -1,0 +1,136 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+export async function getStaticPaths() {
+  const defaultServices = [
+    { name: "Botox & Fillers", description: "Precision injectables for natural-looking volume.", page_slug: "botox-fillers" },
+    { name: "Laser Resurfacing", description: "Advanced laser technology for skin rejuvenation.", page_slug: "laser-resurfacing" },
+    { name: "Chemical Peels", description: "Medical-grade exfoliation for luminous skin.", page_slug: "chemical-peels" },
+    { name: "Microneedling", description: "Collagen induction for firmer, radiant skin.", page_slug: "microneedling" },
+    { name: "Body Contouring", description: "Non-surgical fat reduction and skin tightening.", page_slug: "body-contouring" },
+    { name: "IV Therapy", description: "Customized nutrient infusions for wellness.", page_slug: "iv-therapy" },
+  ];
+  const services: any[] = (site as any).services?.length > 0 ? (site as any).services : defaultServices;
+  return services.map(s => ({
+    params: { slug: s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-') },
+    props: { service: s },
+  }));
+}
+
+const { service } = Astro.props;
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalProcedure",
+  "name": service.name,
+  "description": service.description,
+  "provider": { "@type": "MedicalOrganization", "name": site.clinic_name, "url": siteUrl }
+};
+---
+<Layout
+  title={`${service.name} | ${site.clinic_name}`}
+  description={`${service.name} at ${site.clinic_name}. ${service.description}`}
+  schema={schema}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span> / </span>
+        <a href="/services">Treatments</a><span> / </span>
+        <span aria-current="page">{service.name}</span>
+      </nav>
+      <span class="page-overline">Treatment</span>
+      <h1>{service.name}</h1>
+      <p class="hero-sub">{service.description}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-layout">
+      <main class="service-main">
+        <div class="content-block reveal">
+          <h2>About This Treatment</h2>
+          <p>{service.description} Our board-certified medical aestheticians combine clinical precision with artistic vision to deliver results that enhance your natural beauty.</p>
+        </div>
+        <div class="content-block reveal">
+          <h2>The Experience</h2>
+          <ul class="expect-list">
+            <li>Private consultation with your specialist</li>
+            <li>Personalized treatment plan designed for your goals</li>
+            <li>Comfortable treatment in our serene studio</li>
+            <li>Comprehensive aftercare protocol</li>
+            <li>Follow-up care and results assessment</li>
+          </ul>
+        </div>
+        <div class="content-block reveal">
+          <h2>Questions & Answers</h2>
+          {[
+            { q: `What results can I expect from ${service.name}?`, a: "Results are highly personalized. Your specialist will provide realistic expectations during your consultation." },
+            { q: "How many sessions are recommended?", a: "Treatment frequency depends on your individual goals and skin condition. Your specialist will create a customized plan." },
+            { q: "Is there downtime?", a: "Most of our treatments have minimal to no downtime. Your specialist will discuss what to expect for your specific treatment." },
+          ].map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </main>
+
+      <aside class="booking-sidebar">
+        <div class="booking-card">
+          <p class="booking-overline">Private Consultation</p>
+          <h3>Begin Your Journey</h3>
+          <p>Schedule a confidential consultation with one of our specialists.</p>
+          <a href="/contact" class="btn btn-ghost" style="width:100%;text-align:center;">Book Now</a>
+          <div class="sidebar-contact">
+            <a href={`tel:${site.phone}`} class="sidebar-phone">{site.phone}</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%; animation: gradientShift 8s ease infinite;
+  padding: 10rem 0 5rem;
+}
+.breadcrumb { font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+.breadcrumb a { color: rgba(245,240,232,0.4); }
+.breadcrumb a:hover { color: var(--color-text-gold); }
+.page-overline { font-size: 0.625rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-text-gold); display: block; margin-bottom: 1rem; }
+.page-hero h1 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0 0 1rem; }
+.hero-sub { font-family: var(--font-caption); font-style: italic; color: var(--color-text-secondary); font-size: 1.125rem; margin: 0; max-width: 560px; }
+.content-layout { display: grid; grid-template-columns: 1fr 300px; gap: 5rem; align-items: start; }
+.content-block { margin-bottom: 3rem; }
+.content-block h2 { font-family: var(--font-display); color: var(--color-text-primary); margin: 0 0 1rem; font-size: 1.75rem; font-weight: 400; }
+.content-block p { color: var(--color-text-secondary); line-height: 1.8; }
+.expect-list { color: var(--color-text-secondary); line-height: 2.1; padding-left: 0; list-style: none; }
+.expect-list li { padding-left: 1.5rem; position: relative; }
+.expect-list li::before { content: '—'; position: absolute; left: 0; color: var(--color-text-gold); }
+.faq-item { border-bottom: 1px solid rgba(201,169,110,0.15); }
+.faq-q { cursor: none; padding: 1.25rem 0; font-size: 0.9375rem; color: var(--color-text-primary); list-style: none; font-family: var(--font-body); }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::before { content: '+'; margin-right: 0.875rem; color: var(--color-text-gold); }
+details[open] .faq-q::before { content: '−'; }
+.faq-a { padding: 0 0 1.25rem 1.5rem; color: var(--color-text-secondary); line-height: 1.75; margin: 0; font-size: 0.9rem; }
+.booking-sidebar { position: sticky; top: 100px; }
+.booking-card { background: var(--color-surface-light); border-top: 1px solid var(--color-text-gold); padding: 2.5rem 2rem; }
+.booking-overline { font-size: 0.625rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-text-gold); margin: 0 0 0.75rem; }
+.booking-card h3 { font-family: var(--font-display); color: var(--color-text-primary); margin: 0 0 0.875rem; font-size: 1.5rem; font-style: italic; }
+.booking-card p { color: var(--color-text-secondary); font-size: 0.875rem; margin: 0 0 1.5rem; line-height: 1.65; }
+.sidebar-contact { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(201,169,110,0.15); }
+.sidebar-phone { font-size: 1.125rem; color: var(--color-text-gold); letter-spacing: 0.05em; }
+@media (max-width: 1023px) { .content-layout { grid-template-columns: 1fr; } .booking-sidebar { position: static; } }
+</style>

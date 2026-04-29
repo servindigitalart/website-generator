@@ -1,0 +1,54 @@
+---
+const { number, name, description, slug } = Astro.props;
+---
+<article class="service-card" aria-label={name}>
+  <span class="service-number" aria-hidden="true">{number}</span>
+  <h3 class="service-name">{name}</h3>
+  <p class="service-desc">{description}</p>
+  <a href={`/services/${slug}`} class="service-arrow" aria-label={`Learn more about ${name}`}>
+    <span>Explore</span>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</article>
+
+<style>
+.service-card {
+  padding: 2.5rem 2rem;
+  background: var(--color-surface-base);
+  border: 1px solid rgba(10,46,110,0.1);
+  border-left: 4px solid var(--color-brand-primary);
+  border-radius: var(--radius-md);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+.service-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 0; height: 3px;
+  background: var(--color-brand-accent);
+  transition: width 0.4s ease;
+}
+.service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.service-card:hover::after { width: 100%; }
+.service-number {
+  font-family: var(--font-stats);
+  font-size: 4rem; font-weight: 400;
+  color: rgba(10,46,110,0.12);
+  line-height: 1; display: block; margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
+.service-name {
+  font-family: var(--font-display); font-size: 1.25rem; font-weight: 700;
+  color: var(--color-brand-primary); margin: 0 0 0.75rem;
+}
+.service-desc { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.7; margin: 0 0 1.5rem; }
+.service-arrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  color: var(--color-brand-accent); font-weight: 600; font-size: 0.875rem;
+  transition: gap 0.2s;
+}
+.service-arrow:hover { gap: 0.75rem; }
+</style>

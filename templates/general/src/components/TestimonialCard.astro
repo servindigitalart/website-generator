@@ -1,0 +1,45 @@
+---
+interface Props {
+  quote: string;
+  patient: string;
+  treatment?: string;
+  rating?: number;
+}
+const { quote, patient, treatment, rating = 5 } = Astro.props;
+---
+<article class="testimonial-card">
+  <div class="stars" aria-label={`${rating} out of 5 stars`}>
+    {Array.from({ length: 5 }, (_, i) => (
+      <span class={i < rating ? 'star filled' : 'star'}>★</span>
+    ))}
+  </div>
+  <blockquote class="testimonial-quote">"{quote}"</blockquote>
+  <footer class="testimonial-footer">
+    <span class="testimonial-patient">{patient}</span>
+    {treatment && <span class="testimonial-treatment">{treatment}</span>}
+  </footer>
+</article>
+
+<style>
+.testimonial-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.stars { display: flex; gap: 2px; }
+.star { font-size: 1rem; color: var(--color-border); }
+.star.filled { color: #F59E0B; }
+.testimonial-quote {
+  font-size: 0.9375rem; color: var(--color-text-secondary);
+  line-height: 1.75; font-style: italic; flex: 1; margin: 0;
+}
+.testimonial-footer { display: flex; flex-direction: column; gap: 0.25rem; }
+.testimonial-patient { font-size: 0.875rem; font-weight: 600; color: var(--color-text-primary); }
+.testimonial-treatment {
+  display: inline-block; font-size: 0.75rem; font-weight: 500;
+  color: var(--color-brand-primary); background: rgba(0,122,230,0.08);
+  padding: 0.2rem 0.625rem; border-radius: var(--radius-full);
+}
+</style>

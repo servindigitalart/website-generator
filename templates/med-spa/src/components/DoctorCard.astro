@@ -1,0 +1,35 @@
+---
+const { name, title, specialty, bio } = Astro.props;
+---
+<article class="doctor-card">
+  <div class="doctor-photo" aria-hidden="true">
+    <span class="doctor-initials">{name.split(' ').map((n: string) => n[0]).join('').slice(0,2)}</span>
+  </div>
+  <h3 class="doctor-name">{name}</h3>
+  <p class="doctor-title">{title}</p>
+  <p class="doctor-specialty">{specialty}</p>
+  <div class="gold-rule" style="margin:1rem 0;"></div>
+  <p class="doctor-bio">{bio}</p>
+</article>
+
+<style>
+.doctor-card {
+  padding: 2.5rem 2rem; background: var(--color-surface-light);
+  text-align: center; border-top: 1px solid rgba(201,169,110,0.3);
+  transition: background 0.3s;
+}
+.doctor-card:hover { background: var(--color-surface-alt); }
+.doctor-photo {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: linear-gradient(135deg, #1A1A2E, #2D1F5E);
+  border: 1px solid rgba(201,169,110,0.4);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+.doctor-initials { font-family: var(--font-display); font-size: 1.5rem; color: var(--color-text-gold); font-style: italic; }
+.doctor-name { font-family: var(--font-display); font-size: 1.375rem; font-weight: 400; color: var(--color-text-primary); margin: 0 0 0.25rem; }
+.doctor-title { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-text-gold); margin: 0 0 0.25rem; font-family: var(--font-body); }
+.doctor-specialty { font-family: var(--font-caption); font-style: italic; color: var(--color-text-secondary); margin: 0; font-size: 0.9375rem; }
+.gold-rule { width: 40px; margin-left: auto !important; margin-right: auto !important; }
+.doctor-bio { font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.7; margin: 0; }
+</style>

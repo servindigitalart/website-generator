@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+const defaultServices = [
+  { name: "Joint Replacement", description: "Hip, knee, and shoulder replacement with minimally invasive techniques for faster recovery.", page_slug: "joint-replacement" },
+  { name: "Sports Medicine", description: "Treating athletes of all levels with evidence-based sports medicine and injury prevention.", page_slug: "sports-medicine" },
+  { name: "Spine Surgery", description: "Cutting-edge spinal care from disc herniation to complex deformity correction.", page_slug: "spine-surgery" },
+  { name: "Shoulder & Elbow", description: "Rotator cuff repair, shoulder instability, tennis elbow, and arthroscopic procedures.", page_slug: "shoulder-elbow" },
+  { name: "Foot & Ankle", description: "Comprehensive care for all foot and ankle conditions, injuries, and reconstructions.", page_slug: "foot-ankle" },
+  { name: "Physical Therapy", description: "Evidence-based rehabilitation to restore function and prevent re-injury.", page_slug: "physical-therapy" },
+  { name: "Hand & Wrist", description: "Carpal tunnel, trigger finger, fractures, and complex hand reconstructions.", page_slug: "hand-wrist" },
+  { name: "Fracture Care", description: "Comprehensive fracture management from emergency care through full rehabilitation.", page_slug: "fracture-care" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+---
+<Layout
+  title={`Services | ${site.clinic_name}`}
+  description={`Explore our full range of orthopedic services at ${site.clinic_name}.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">Services</span>
+      </nav>
+      <h1 class="reveal">Our Orthopedic Services</h1>
+      <p class="page-hero-sub reveal">Advanced surgical and non-surgical solutions for every musculoskeletal condition</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="services-grid">
+        {services.map((s: any) => (
+          <a href={`/services/${s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}`} class="service-card reveal" aria-label={s.name}>
+            <div class="service-icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5"/><path d="M10 16h12M16 10v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <h2>{s.name}</h2>
+            <p>{s.description}</p>
+            <span class="card-link">Learn More →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(135deg, #0A2E6E, #1565C0);
+  padding: 10rem 0 4rem; color: white;
+}
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.breadcrumb a:hover { color: var(--color-brand-accent); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.service-card {
+  display: flex; flex-direction: column; padding: 2.5rem 2rem;
+  border: 1px solid rgba(10,46,110,0.12); border-left: 4px solid var(--color-brand-primary);
+  border-radius: var(--radius-md); background: var(--color-surface-base);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.service-icon { color: var(--color-brand-accent); margin-bottom: 1.25rem; }
+.service-card h2 { font-size: 1.25rem; font-weight: 700; color: var(--color-brand-primary); margin: 0 0 0.75rem; }
+.service-card p { color: var(--color-text-secondary); margin: 0 0 1.5rem; flex: 1; line-height: 1.7; }
+.card-link { color: var(--color-brand-accent); font-weight: 700; font-size: 0.875rem; }
+@media (max-width: 1023px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .services-grid { grid-template-columns: 1fr; } }
+</style>

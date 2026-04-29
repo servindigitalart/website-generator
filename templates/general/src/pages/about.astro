@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout title={`About | ${site.clinic_name}`} description={`Learn about ${site.clinic_name} — our mission, values, and commitment to your health.`}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a> / <span aria-current="page">About</span></nav>
+      <span class="page-tag">Our Story</span>
+      <h1>About {site.clinic_name}</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container story-grid">
+      <div class="story-image reveal" aria-hidden="true">
+        <div class="img-placeholder"></div>
+      </div>
+      <div class="story-text reveal reveal-delay-1">
+        <span class="section-tag" style="display:inline-block;margin-bottom:1rem;">Who We Are</span>
+        <h2>Caring for Our Community</h2>
+        <p class="story-lead">We founded {site.clinic_name} with a simple belief: every patient deserves attentive, personalized care that addresses their whole health — not just their symptoms.</p>
+        <p>Our practice was built on the principles of accessibility, transparency, and compassion. We keep our appointment times generous so your physician can truly listen, understand your history, and partner with you in making informed decisions about your health.</p>
+        <p>From our front desk team to our clinicians, everyone at {site.clinic_name} is committed to making your experience welcoming, respectful, and effective.</p>
+        <a href="/team" class="btn btn-primary" style="margin-top:1.5rem;">Meet the Team</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section values-section">
+    <div class="container">
+      <header class="section-header">
+        <span class="section-tag">Our Principles</span>
+        <h2>What We Stand For</h2>
+        <p>Our values guide every interaction and every care decision we make.</p>
+      </header>
+      <div class="values-grid">
+        {[
+          { icon: "🤝", title: "Patient-First Care", desc: "Your needs, preferences, and goals are the foundation of every treatment plan we create." },
+          { icon: "🔬", title: "Evidence-Based Medicine", desc: "We follow the latest clinical guidelines and research to ensure you receive the most effective treatments available." },
+          { icon: "🔓", title: "Radical Transparency", desc: "We explain everything clearly — diagnoses, options, costs — so you can make informed decisions about your care." },
+          { icon: "♿", title: "Accessible to All", desc: "We accept most insurance plans and offer sliding-scale fees to ensure quality care is available to everyone in our community." },
+          { icon: "📱", title: "Convenient Access", desc: "From telehealth visits to same-day appointments, we make it easy to get care when and how you need it." },
+          { icon: "🏥", title: "Continuity of Care", desc: "Our integrated team approach means your care is coordinated across providers and specialties seamlessly." },
+        ].map((v, i) => (
+          <div class={`value-card reveal reveal-delay-${(i % 3) + 1}`}>
+            <span class="value-icon" aria-hidden="true">{v.icon}</span>
+            <h3>{v.title}</h3>
+            <p>{v.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container accreditation">
+      <header class="section-header">
+        <span class="section-tag">Recognition</span>
+        <h2>Accreditations & Affiliations</h2>
+      </header>
+      <div class="accred-grid">
+        {["Joint Commission Accredited", "NCQA Patient-Centered Medical Home", "AMA Member Practice", "State Medical Board Certified", "HIPAA Compliant", "Medicare & Medicaid Certified"].map(item => (
+          <div class="accred-item reveal">
+            <span class="accred-check">✓</span>
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.img-placeholder { height: 460px; background: linear-gradient(135deg, #DBEAFE, #EFF6FF); border-radius: var(--radius-xl); }
+.story-text h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); margin-bottom: 1.25rem; }
+.story-lead { font-size: 1.125rem; color: var(--color-brand-primary); line-height: 1.7; font-weight: 500; margin-bottom: 1.25rem; }
+.story-text p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; font-size: 0.9375rem; }
+.values-section { background: var(--color-surface-alt); }
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.value-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 2rem; }
+.value-icon { font-size: 2rem; display: block; margin-bottom: 1rem; }
+.value-card h3 { font-size: 1.0625rem; margin-bottom: 0.625rem; }
+.value-card p { color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.7; margin: 0; }
+.accred-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.accred-item { display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; background: var(--color-surface-alt); border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 500; }
+.accred-check { width: 24px; height: 24px; background: rgba(0,212,170,0.15); color: var(--color-brand-accent-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+@media (max-width: 1023px) { .story-grid { grid-template-columns: 1fr; gap: 3rem; } .values-grid { grid-template-columns: repeat(2, 1fr); } .accred-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .values-grid { grid-template-columns: 1fr; } .accred-grid { grid-template-columns: 1fr; } }
+</style>

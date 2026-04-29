@@ -1,0 +1,291 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      "url": siteUrl,
+      "name": site.clinic_name,
+    },
+    {
+      "@type": "MedicalOrganization",
+      "@id": `${siteUrl}/#org`,
+      "name": site.clinic_name,
+      "url": siteUrl,
+      "telephone": site.phone,
+      "email": site.email,
+      "address": { "@type": "PostalAddress", "streetAddress": site.address },
+      "medicalSpecialty": "Orthopedic Surgery",
+    }
+  ]
+};
+
+const defaultServices = [
+  { name: "Joint Replacement", description: "Advanced hip, knee, and shoulder replacement with minimally invasive techniques.", page_slug: "joint-replacement" },
+  { name: "Sports Medicine", description: "Treating athletes of all levels — from weekend warriors to elite competitors.", page_slug: "sports-medicine" },
+  { name: "Spine Surgery", description: "Cutting-edge spinal care from disc herniation to complex deformity correction.", page_slug: "spine-surgery" },
+  { name: "Shoulder & Elbow", description: "Rotator cuff repair, shoulder instability, tennis elbow, and more.", page_slug: "shoulder-elbow" },
+  { name: "Foot & Ankle", description: "Comprehensive care for all foot and ankle conditions and injuries.", page_slug: "foot-ankle" },
+  { name: "Physical Therapy", description: "Evidence-based rehabilitation to restore function and prevent re-injury.", page_slug: "physical-therapy" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+
+const defaultDoctors = [
+  { name: "Dr. James Mitchell", title: "MD, FAAOS", specialty: "Joint Replacement Specialist", bio: "20+ years performing over 3,000 successful joint replacement surgeries.", credentials: ["FAAOS", "ABOS"] },
+  { name: "Dr. Maria Santos", title: "MD", specialty: "Sports Medicine & Arthroscopy", bio: "Team physician for professional athletes, specializing in minimally invasive techniques.", credentials: ["ABOS"] },
+  { name: "Dr. Kevin Park", title: "MD, PhD", specialty: "Spine & Complex Reconstruction", bio: "Fellowship-trained spine surgeon with expertise in complex deformity correction.", credentials: ["ABOS", "SRS"] },
+];
+const doctors = site.doctors.length > 0 ? site.doctors : defaultDoctors;
+
+const stats = [
+  { value: 5000, suffix: "+", label: "Patients Treated" },
+  { value: 20, suffix: "+ Yrs", label: "Combined Experience" },
+  { value: 98, suffix: "%", label: "Patient Satisfaction" },
+  { value: 40, suffix: "+", label: "Procedures Offered" },
+];
+
+const testimonials = [
+  { quote: "After my knee replacement, I'm back on the golf course — better than I've been in 10 years. The team here is truly world-class.", patient: "Robert H.", treatment: "Total Knee Replacement" },
+  { quote: "I avoided back surgery for years out of fear. The minimally invasive approach they used had me walking the next day.", patient: "Linda M.", treatment: "Lumbar Disc Surgery" },
+];
+---
+<Layout
+  title={`${site.clinic_name} | Expert Orthopedic Care`}
+  description={`${site.clinic_name} — ${site.tagline}. Board-certified orthopedic surgeons offering advanced joint replacement, sports medicine, and spine surgery.`}
+  schema={schema}
+>
+  <Nav />
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-image-panel" aria-hidden="true"></div>
+    <div class="hero-content-wrap">
+      <div class="hero-content">
+        <p class="hero-overline">EXPERT ORTHOPEDIC CARE</p>
+        <h1 id="hero-heading">{site.hero_headline || 'Move Without Limits'}</h1>
+        <p class="hero-sub">{site.hero_subtext || 'Advanced orthopedic surgery and sports medicine for lasting relief and recovery.'}</p>
+        <div class="hero-ctas">
+          <a href="/contact" class="btn btn-primary">Book Consultation</a>
+          <a href="/services" class="btn btn-accent-outline">Our Services</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <section class="stats-bar" aria-label="Practice statistics">
+    <div class="container stats-inner">
+      {stats.map(stat => (
+        <div class="stat-item">
+          <p class="stat-number" data-target={stat.value} data-suffix={stat.suffix} aria-label={`${stat.value}${stat.suffix} ${stat.label}`}>0</p>
+          <p class="stat-label">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section services-section" aria-labelledby="services-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">What We Treat</span>
+        <h2 id="services-heading">Our Services</h2>
+        <div class="orange-rule"></div>
+      </header>
+      <div class="services-grid">
+        {services.slice(0, 6).map((s: any, i: number) => (
+          <ServiceCard
+            number={String(i + 1).padStart(2, '0')}
+            name={s.name}
+            description={s.description}
+            slug={s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}
+          />
+        ))}
+      </div>
+      <div style="text-align:center;margin-top:3rem;" class="reveal">
+        <a href="/services" class="btn btn-primary">View All Services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="section timeline-section" aria-labelledby="timeline-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">How It Works</span>
+        <h2 id="timeline-heading">Your Recovery Journey</h2>
+        <div class="orange-rule"></div>
+      </header>
+      <div class="timeline-track" aria-label="Recovery steps">
+        <div class="timeline-line" aria-hidden="true"></div>
+        {[
+          { step: "01", title: "Consultation", desc: "Comprehensive evaluation with your specialist" },
+          { step: "02", title: "Diagnosis", desc: "Advanced imaging and precise diagnosis" },
+          { step: "03", title: "Treatment", desc: "Personalized surgical or non-surgical plan" },
+          { step: "04", title: "Recovery", desc: "Expert rehabilitation and long-term care" },
+        ].map(item => (
+          <div class="timeline-step">
+            <div class="timeline-dot" aria-hidden="true">{item.step}</div>
+            <h3 class="timeline-title">{item.title}</h3>
+            <p class="timeline-desc">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCTORS -->
+  <section class="section doctors-section" aria-labelledby="doctors-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Our Specialists</span>
+        <h2 id="doctors-heading">Meet Your Surgeons</h2>
+        <div class="orange-rule"></div>
+      </header>
+      <div class="doctors-grid">
+        {doctors.slice(0, 3).map((d: any) => <DoctorCard {...d} />)}
+      </div>
+      <div style="text-align:center;margin-top:2.5rem;" class="reveal">
+        <a href="/team" class="btn btn-primary">View Full Team</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section testimonials-section" aria-labelledby="testimonials-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Patient Stories</span>
+        <h2 id="testimonials-heading">Real Results, Real Lives</h2>
+        <div class="orange-rule"></div>
+      </header>
+      <div class="testimonials-grid">
+        {testimonials.map(t => <TestimonialCard {...t} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+/* HERO */
+.hero {
+  display: flex; min-height: 100svh; position: relative;
+}
+.hero-image-panel {
+  width: 55%; flex-shrink: 0;
+  background: linear-gradient(135deg, #0A2E6E 0%, #1565C0 100%);
+  clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+  position: relative;
+}
+.hero-image-panel::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom right, rgba(255,107,53,0.15), transparent);
+}
+.hero-content-wrap {
+  flex: 1; display: flex; align-items: center;
+  background: white; padding: 8rem 5% 4rem 6%;
+}
+.hero-content { max-width: 480px; }
+.hero-overline {
+  font-family: var(--font-stats); font-size: 0.875rem; letter-spacing: 0.3em;
+  color: var(--color-brand-accent); margin: 0 0 1.25rem;
+}
+h1 {
+  font-size: clamp(2.25rem, 4.5vw, 4.5rem); font-weight: 800;
+  color: var(--color-text-primary); margin: 0 0 1.25rem; line-height: 1.1;
+}
+.hero-sub {
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  color: var(--color-text-secondary); margin: 0 0 2.5rem; line-height: 1.7;
+}
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+/* STATS BAR */
+.stats-bar {
+  background: var(--color-brand-primary);
+  border-top: 4px solid var(--color-brand-accent);
+}
+.stats-inner {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; padding: 3rem 0;
+}
+.stat-item {
+  text-align: center; padding: 1.5rem 1rem;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.stat-item:last-child { border-right: none; }
+.stat-number {
+  font-family: var(--font-stats); font-size: clamp(2.5rem, 4vw, 4rem);
+  color: var(--color-brand-accent); margin: 0 0 0.375rem; line-height: 1;
+  letter-spacing: 0.02em;
+}
+.stat-label { color: rgba(255,255,255,0.7); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin: 0; }
+
+/* TIMELINE */
+.timeline-section { background: var(--color-surface-alt); }
+.timeline-track {
+  position: relative; display: grid;
+  grid-template-columns: repeat(4, 1fr); gap: 2rem;
+  padding-top: 3rem;
+}
+.timeline-line {
+  position: absolute; top: 52px; left: calc(12.5% - 20px); right: calc(12.5% - 20px);
+  height: 2px; background: var(--color-brand-accent); z-index: 0;
+}
+.timeline-step {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; position: relative; z-index: 1;
+}
+.timeline-dot {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--color-brand-primary); color: white;
+  font-family: var(--font-stats); font-size: 1.375rem;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.25rem;
+  border: 3px solid var(--color-brand-accent);
+  box-shadow: 0 0 0 6px var(--color-surface-alt);
+}
+.timeline-title { font-weight: 700; font-size: 1.125rem; color: var(--color-brand-primary); margin: 0 0 0.5rem; }
+.timeline-desc { font-size: 0.875rem; color: var(--color-text-secondary); margin: 0; line-height: 1.65; }
+
+/* GRIDS */
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.doctors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.testimonials-section { background: var(--color-surface-alt); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+
+/* Responsive */
+@media (max-width: 1023px) {
+  .hero { flex-direction: column; min-height: auto; }
+  .hero-image-panel { width: 100%; height: 320px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
+  .hero-content-wrap { padding: 3rem 1.5rem; }
+  .hero-content { max-width: 100%; }
+  .services-grid, .doctors-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+  .timeline-track { grid-template-columns: 1fr 1fr; }
+  .timeline-line { display: none; }
+}
+@media (max-width: 639px) {
+  .services-grid, .doctors-grid, .testimonials-grid { grid-template-columns: 1fr; }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .timeline-track { grid-template-columns: 1fr; }
+  .hero-ctas { flex-direction: column; }
+}
+</style>

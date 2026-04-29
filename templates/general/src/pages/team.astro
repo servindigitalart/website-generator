@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const defaultDoctors = [
+  { name: "Dr. Sarah Mitchell", title: "MD, FACP", specialty: "Internal Medicine & Primary Care", bio: "Board-certified internist with 18 years of experience in comprehensive adult care and chronic disease management." },
+  { name: "Dr. James Okonkwo", title: "MD, FAAFP", specialty: "Family Medicine", bio: "Family physician dedicated to providing personalized, evidence-based care for patients of all ages." },
+  { name: "Dr. Linda Huang", title: "DO, MPH", specialty: "Preventive Medicine", bio: "Preventive medicine specialist focused on empowering patients through lifestyle medicine and wellness programs." },
+  { name: "Dr. Robert Chen", title: "MD, PhD", specialty: "Cardiology Consulting", bio: "Cardiovascular specialist with expertise in risk stratification and preventive cardiac care." },
+  { name: "Dr. Amara Patel", title: "NP-BC", specialty: "Pediatric Nurse Practitioner", bio: "Dedicated to providing compassionate, family-centered care for patients from newborns through adolescence." },
+  { name: "Dr. Marcus Rivera", title: "PA-C", specialty: "Urgent Care", bio: "Experienced physician assistant specializing in acute care, minor procedures, and sports medicine." },
+];
+const doctors = (site as any).doctors?.length > 0 ? (site as any).doctors : defaultDoctors;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": doctors.map((d: any) => ({
+    "@type": "Physician",
+    "name": d.name,
+    "medicalSpecialty": d.specialty,
+    "worksFor": { "@type": "MedicalOrganization", "name": site.clinic_name },
+  }))
+};
+---
+<Layout title={`Our Team | ${site.clinic_name}`} description={`Meet the board-certified physicians and healthcare professionals at ${site.clinic_name}.`} schema={schema}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a> / <span aria-current="page">Our Team</span></nav>
+      <span class="page-tag">Our Physicians</span>
+      <h1>Meet Your Care Team</h1>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="team-grid">
+        {doctors.map((d: any, i: number) => (
+          <div class={`reveal reveal-delay-${(i % 3) + 1}`}>
+            <DoctorCard {...d} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+@media (max-width: 1023px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .team-grid { grid-template-columns: 1fr; } }
+</style>

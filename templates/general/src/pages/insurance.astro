@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const insurers = [
+  "Aetna", "Blue Cross Blue Shield", "Cigna", "UnitedHealthcare",
+  "Humana", "Medicare", "Medicaid", "Tricare",
+  "Kaiser Permanente", "Anthem", "Molina Healthcare", "Centene",
+];
+---
+<Layout title={`Insurance | ${site.clinic_name}`} description={`Insurance plans accepted at ${site.clinic_name}, plus billing and payment information.`}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a> / <span aria-current="page">Insurance</span></nav>
+      <span class="page-tag">Coverage</span>
+      <h1>Insurance & Billing</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-cols">
+      <div>
+        <h2 class="reveal">Accepted Insurance Plans</h2>
+        <p class="reveal">We work with most major insurance providers to make quality care accessible. If you don't see your plan listed, please call us — we may still be able to accommodate you.</p>
+
+        <div class="insurer-grid reveal">
+          {insurers.map(name => (
+            <div class="insurer-chip">
+              <span class="chip-check">✓</span>
+              <span>{name}</span>
+            </div>
+          ))}
+        </div>
+
+        <div class="billing-info reveal" style="margin-top:3rem;">
+          <h2>Billing & Payment</h2>
+          <p>We are committed to transparent billing practices. Before any non-emergency procedure, our billing team will provide a good-faith estimate of your expected costs.</p>
+
+          <div class="payment-options">
+            <h3>Payment Options</h3>
+            <ul class="payment-list">
+              {["All major credit and debit cards", "Cash and personal checks", "CareCredit healthcare financing", "Health Savings Account (HSA)", "Flexible Spending Account (FSA)", "Payment plans available upon request"].map(opt => (
+                <li>{opt}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-section reveal" style="margin-top:3rem;">
+          <h2>Billing FAQs</h2>
+          {[
+            { q: "How do I know what my insurance covers?", a: "We recommend calling your insurance provider before your visit to confirm coverage. Our billing team is also available to help verify your benefits." },
+            { q: "What if I don't have insurance?", a: "We offer a self-pay discount for uninsured patients. Our team can discuss a payment plan that fits your budget." },
+            { q: "When will I receive my bill?", a: "After your visit, we submit your claim to insurance first. Once your claim is processed (typically 2–4 weeks), you'll receive a statement for any remaining balance." },
+            { q: "How do I dispute a charge?", a: "Contact our billing department at {site.phone} or by email. We'll review any billing concern promptly and work to resolve it." },
+          ].map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <aside class="info-sidebar">
+        <div class="sidebar-card">
+          <p class="card-tag">Need Help?</p>
+          <h3>Billing Questions</h3>
+          <p>Our billing team is here to help you understand your coverage and costs.</p>
+          <a href={`tel:${site.phone}`} class="btn btn-primary" style="width:100%;text-align:center;">{site.phone}</a>
+          <div class="sidebar-divider">
+            <a href={`mailto:${site.email}`} class="sidebar-email">{site.email}</a>
+          </div>
+        </div>
+        <div class="sidebar-note">
+          <h4>No Insurance?</h4>
+          <p>Self-pay discounts and flexible payment plans available. We believe cost should never be a barrier to necessary care.</p>
+          <a href="/contact" class="btn btn-outline" style="width:100%;text-align:center;margin-top:1rem;">Contact Us</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.content-cols { display: grid; grid-template-columns: 1fr 280px; gap: 5rem; align-items: start; }
+.content-cols h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+.content-cols p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; font-size: 0.9375rem; }
+.insurer-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 1.5rem; }
+.insurer-chip { display: flex; align-items: center; gap: 0.625rem; padding: 0.75rem 1rem; background: var(--color-surface-alt); border-radius: var(--radius-md); border: 1px solid var(--color-border); font-size: 0.875rem; font-weight: 500; }
+.chip-check { width: 20px; height: 20px; background: rgba(0,212,170,0.15); color: var(--color-brand-accent-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+.payment-options { background: var(--color-surface-alt); border-radius: var(--radius-lg); padding: 1.75rem; margin-top: 1.5rem; }
+.payment-options h3 { font-size: 1.0625rem; margin-bottom: 1rem; }
+.payment-list { list-style: none; padding: 0; margin: 0; }
+.payment-list li { padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.9rem; color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border); }
+.payment-list li:last-child { border-bottom: none; }
+.payment-list li::before { content: '✓'; position: absolute; left: 0; color: var(--color-brand-accent); font-weight: 700; }
+.faq-item { border-bottom: 1px solid var(--color-border); }
+.faq-q { cursor: pointer; padding: 1.125rem 0; font-size: 0.9375rem; font-weight: 600; color: var(--color-text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '+'; color: var(--color-brand-primary); font-size: 1.25rem; font-weight: 400; flex-shrink: 0; }
+details[open] .faq-q::after { content: '−'; }
+.faq-a { padding: 0 0 1.25rem; color: var(--color-text-secondary); line-height: 1.75; font-size: 0.9rem; }
+.info-sidebar { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 1rem; }
+.sidebar-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-md); }
+.card-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; color: var(--color-brand-primary); margin-bottom: 0.5rem; display: block; }
+.sidebar-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+.sidebar-card p { color: var(--color-text-secondary); font-size: 0.875rem; margin-bottom: 1.25rem; }
+.sidebar-divider { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border); }
+.sidebar-email { font-size: 0.875rem; color: var(--color-brand-primary); word-break: break-all; }
+.sidebar-note { background: rgba(0,122,230,0.06); border: 1px solid rgba(0,122,230,0.15); border-radius: var(--radius-lg); padding: 1.5rem; }
+.sidebar-note h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+.sidebar-note p { font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.65; margin: 0; }
+@media (max-width: 1023px) { .content-cols { grid-template-columns: 1fr; } .info-sidebar { position: static; } .insurer-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 639px) { .insurer-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

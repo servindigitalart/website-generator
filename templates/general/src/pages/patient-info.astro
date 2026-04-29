@@ -1,0 +1,176 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout title={`Patient Information | ${site.clinic_name}`} description={`New patient resources, forms, and preparation guides for ${site.clinic_name}.`}>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb"><a href="/">Home</a> / <span aria-current="page">Patient Information</span></nav>
+      <span class="page-tag">New Patients</span>
+      <h1>Patient Information</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-grid">
+      <main>
+        <!-- New Patient Checklist -->
+        <div class="info-block reveal">
+          <h2>New Patient Checklist</h2>
+          <p>Prepare for your first visit by gathering the items below. Arriving prepared helps us make the most of your appointment time.</p>
+          <div class="checklist-grid">
+            {[
+              { icon: "🪪", title: "Photo ID", desc: "Government-issued photo identification." },
+              { icon: "💳", title: "Insurance Card", desc: "Front and back of your current insurance card." },
+              { icon: "💊", title: "Medication List", desc: "All current prescriptions, OTCs, and supplements." },
+              { icon: "📋", title: "Medical Records", desc: "Prior records, lab results, or imaging if available." },
+              { icon: "👨‍👩‍👧", title: "Family History", desc: "Known conditions in immediate family members." },
+              { icon: "💰", title: "Co-pay / Payment", desc: "Payment method for co-pay or self-pay amount." },
+            ].map(item => (
+              <div class="checklist-item">
+                <span class="checklist-icon" aria-hidden="true">{item.icon}</span>
+                <div>
+                  <h4>{item.title}</h4>
+                  <p>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Forms -->
+        <div class="info-block reveal">
+          <h2>Patient Forms</h2>
+          <p>Complete these forms before your first visit to save time. You can return the completed forms by email or bring them to your appointment.</p>
+          <div class="forms-list">
+            {[
+              { title: "New Patient Registration", desc: "Basic demographic and contact information." },
+              { title: "Medical History Form", desc: "Comprehensive health history questionnaire." },
+              { title: "HIPAA Privacy Notice", desc: "Acknowledgment of our privacy practices." },
+              { title: "Financial Responsibility Agreement", desc: "Insurance and billing policies acknowledgment." },
+              { title: "Emergency Contact Form", desc: "Designate an emergency contact person." },
+            ].map(form => (
+              <div class="form-row-item">
+                <div>
+                  <h4>{form.title}</h4>
+                  <p>{form.desc}</p>
+                </div>
+                <a href={`mailto:${site.email}?subject=Request: ${form.title}`} class="btn btn-outline">Request Form</a>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- What to Expect -->
+        <div class="info-block reveal">
+          <h2>Your First Appointment</h2>
+          <div class="steps-list">
+            {[
+              { step: "1", title: "Arrive Early", desc: "Plan to arrive 15 minutes early to complete any remaining paperwork and verify your insurance." },
+              { step: "2", title: "Check In", desc: "Our front desk team will verify your information, collect your co-pay, and get you settled." },
+              { step: "3", title: "Vitals & History", desc: "A medical assistant will take your vitals and briefly review your health history and visit reason." },
+              { step: "4", title: "Physician Consultation", desc: "Your physician will conduct a thorough examination and discuss your health concerns and goals." },
+              { step: "5", title: "Care Plan", desc: "You'll receive a clear care plan, any orders for labs or referrals, and a follow-up schedule." },
+            ].map(s => (
+              <div class="step-item">
+                <span class="step-number">{s.step}</span>
+                <div>
+                  <h4>{s.title}</h4>
+                  <p>{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="info-block reveal">
+          <h2>Frequently Asked Questions</h2>
+          {[
+            { q: "How do I schedule an appointment?", a: "You can book online through our contact page, call our office directly, or send us an email. Same-day and next-day appointments are often available." },
+            { q: "What is your cancellation policy?", a: "We ask for at least 24 hours notice for cancellations. This allows us to offer the slot to another patient in need." },
+            { q: "Can I access my medical records?", a: "Yes. You may request copies of your medical records by submitting a written request to our office. Records are typically available within 7–10 business days." },
+            { q: "Do you offer telehealth?", a: "Yes. Many routine visits, follow-ups, and consultations are available via telehealth. Ask our scheduling team about your eligibility." },
+          ].map(faq => (
+            <details class="faq-item">
+              <summary class="faq-q">{faq.q}</summary>
+              <p class="faq-a">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </main>
+
+      <aside class="info-sidebar">
+        <div class="sidebar-card">
+          <p class="card-tag">Ready to get started?</p>
+          <h3>Book Your Appointment</h3>
+          <p>Same-day appointments often available.</p>
+          <a href="/contact" class="btn btn-primary" style="width:100%;text-align:center;">Schedule Online</a>
+          <div class="sidebar-divider">
+            <a href={`tel:${site.phone}`} class="sidebar-phone">{site.phone}</a>
+            <p class="sidebar-hours">{site.hours}</p>
+          </div>
+        </div>
+        <div class="sidebar-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/insurance">Insurance & Billing →</a></li>
+            <li><a href="/services">Our Services →</a></li>
+            <li><a href="/team">Meet Our Team →</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.content-grid { display: grid; grid-template-columns: 1fr 280px; gap: 5rem; align-items: start; }
+.info-block { margin-bottom: 3.5rem; }
+.info-block h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+.info-block p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; font-size: 0.9375rem; }
+.checklist-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem; }
+.checklist-item { display: flex; gap: 1rem; padding: 1.25rem; background: var(--color-surface-alt); border-radius: var(--radius-md); border: 1px solid var(--color-border); align-items: flex-start; }
+.checklist-icon { font-size: 1.5rem; flex-shrink: 0; }
+.checklist-item h4 { font-size: 0.9375rem; margin-bottom: 0.25rem; }
+.checklist-item p { font-size: 0.8125rem; color: var(--color-text-muted); margin: 0; line-height: 1.5; }
+.forms-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; margin-top: 1.5rem; }
+.form-row-item { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--color-border); }
+.form-row-item:last-child { border-bottom: none; }
+.form-row-item h4 { font-size: 0.9375rem; margin-bottom: 0.25rem; }
+.form-row-item p { font-size: 0.8125rem; color: var(--color-text-muted); margin: 0; }
+.form-row-item .btn { flex-shrink: 0; font-size: 0.8125rem; padding: 0.5rem 1rem; }
+.steps-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
+.step-item { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-number { width: 36px; height: 36px; background: var(--color-brand-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.875rem; flex-shrink: 0; }
+.step-item h4 { font-size: 1rem; margin-bottom: 0.35rem; }
+.step-item p { font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.65; margin: 0; }
+.faq-item { border-bottom: 1px solid var(--color-border); }
+.faq-q { cursor: pointer; padding: 1.125rem 0; font-size: 0.9375rem; font-weight: 600; color: var(--color-text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '+'; color: var(--color-brand-primary); font-size: 1.25rem; font-weight: 400; flex-shrink: 0; }
+details[open] .faq-q::after { content: '−'; }
+.faq-a { padding: 0 0 1.25rem; color: var(--color-text-secondary); line-height: 1.75; font-size: 0.9rem; }
+.info-sidebar { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 1rem; }
+.sidebar-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-md); }
+.card-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; color: var(--color-brand-primary); margin-bottom: 0.5rem; display: block; }
+.sidebar-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+.sidebar-card p { color: var(--color-text-secondary); font-size: 0.875rem; margin-bottom: 1.25rem; }
+.sidebar-divider { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border); }
+.sidebar-phone { display: block; font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-brand-primary); }
+.sidebar-hours { font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+.sidebar-links { background: var(--color-surface-alt); border-radius: var(--radius-lg); padding: 1.5rem; }
+.sidebar-links h4 { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: 1rem; }
+.sidebar-links ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+.sidebar-links a { font-size: 0.9rem; font-weight: 600; color: var(--color-brand-primary); }
+.sidebar-links a:hover { color: var(--color-brand-secondary); }
+@media (max-width: 1023px) { .content-grid { grid-template-columns: 1fr; } .info-sidebar { position: static; } }
+@media (max-width: 639px) { .checklist-grid { grid-template-columns: 1fr; } .form-row-item { flex-direction: column; align-items: flex-start; gap: 0.75rem; } }
+</style>

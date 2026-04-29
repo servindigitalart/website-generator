@@ -1,0 +1,200 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+export async function getStaticPaths() {
+  const defaultServices = [
+    { name: "Acne Treatment", description: "Advanced therapies for clear skin.", page_slug: "acne-treatment" },
+    { name: "Anti-Aging", description: "Restore youthfulness with proven treatments.", page_slug: "anti-aging" },
+    { name: "Laser Therapy", description: "Precision laser skin resurfacing.", page_slug: "laser-therapy" },
+    { name: "Cosmetic Dermatology", description: "Expert cosmetic procedures.", page_slug: "cosmetic-dermatology" },
+    { name: "Skin Cancer Screening", description: "Early detection and screening.", page_slug: "skin-cancer-screening" },
+    { name: "Eczema & Psoriasis", description: "Chronic skin condition management.", page_slug: "eczema-psoriasis" },
+    { name: "Chemical Peels", description: "Medical-grade skin resurfacing.", page_slug: "chemical-peels" },
+    { name: "Mohs Surgery", description: "Gold standard skin cancer removal.", page_slug: "mohs-surgery" },
+  ];
+
+  const services = (site.services as any[]).length > 0 ? (site.services as any[]) : defaultServices;
+
+  return services.map((s: any) => ({
+    params: { slug: s.page_slug || s.name.toLowerCase().replace(/\s+/g, "-") },
+    props: { service: s },
+  }));
+}
+
+const { service } = Astro.props;
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalProcedure",
+  "name": service.name,
+  "description": service.description,
+  "provider": {
+    "@type": "MedicalOrganization",
+    "name": site.clinic_name,
+    "url": siteUrl,
+    "telephone": site.phone,
+  }
+};
+
+const faqs = [
+  { q: `What does ${service.name} involve?`, a: `${service.description} Our board-certified dermatologists tailor each treatment to your individual skin type and concerns.` },
+  { q: "How many sessions will I need?", a: "Treatment frequency varies by condition and individual response. Your dermatologist will create a personalized plan during your consultation." },
+  { q: "Is the treatment covered by insurance?", a: "Coverage depends on whether the procedure is medical or cosmetic. We accept most major insurance plans and can verify your benefits." },
+  { q: "What is the recovery time?", a: "Recovery varies by treatment. Many procedures have minimal downtime. Your provider will discuss what to expect during your consultation." },
+];
+---
+<Layout
+  title={`${service.name} | ${site.clinic_name}`}
+  description={service.description}
+  schema={schema}
+>
+  <Nav />
+
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true"> / </span>
+        <a href="/services">Services</a> <span aria-hidden="true"> / </span>
+        <span aria-current="page">{service.name}</span>
+      </nav>
+      <h1 class="reveal">{service.name}</h1>
+      <p class="page-hero-sub reveal">{service.description}</p>
+    </div>
+  </section>
+
+  <div class="service-layout container">
+    <main class="service-main">
+      <section class="service-block reveal">
+        <h2>What is {service.name}?</h2>
+        <p>{service.description} Our board-certified dermatologists combine clinical expertise with cutting-edge technology to deliver exceptional results.</p>
+      </section>
+
+      <section class="service-block reveal">
+        <h2>Who is a Good Candidate?</h2>
+        <p>Most patients in good general health are candidates for this treatment. During your initial consultation, your dermatologist will review your medical history, skin type, and concerns to determine the most effective approach.</p>
+        <ul class="candidate-list">
+          <li>Adults experiencing this skin concern</li>
+          <li>Those who have not responded to over-the-counter treatments</li>
+          <li>Patients seeking professional, medical-grade results</li>
+        </ul>
+      </section>
+
+      <section class="service-block reveal">
+        <h2>What to Expect at {site.clinic_name}</h2>
+        <ol class="steps-list">
+          <li><strong>Consultation</strong> — Comprehensive skin assessment and personalized treatment planning</li>
+          <li><strong>Preparation</strong> — Pre-treatment instructions tailored to your skin type</li>
+          <li><strong>Treatment</strong> — Professional procedure performed by a board-certified dermatologist</li>
+          <li><strong>Follow-up</strong> — Post-treatment care and progress monitoring</li>
+        </ol>
+      </section>
+
+      <section class="service-block reveal">
+        <h2>Cost &amp; Insurance</h2>
+        <p>Treatment costs vary depending on the complexity and number of sessions required. We accept most major insurance plans for medically necessary procedures. Our team will verify your coverage and discuss all options during your consultation.</p>
+        <p><strong>Contact us:</strong> <a href={`tel:${site.phone}`}>{site.phone}</a></p>
+      </section>
+
+      <section class="faq-block reveal" aria-labelledby="faq-heading">
+        <h2 id="faq-heading">Frequently Asked Questions</h2>
+        {faqs.map(faq => (
+          <details class="faq-item">
+            <summary class="faq-q">{faq.q}</summary>
+            <p class="faq-a">{faq.a}</p>
+          </details>
+        ))}
+      </section>
+
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(f => ({
+          "@type": "Question", "name": f.q,
+          "acceptedAnswer": { "@type": "Answer", "text": f.a }
+        }))
+      })} />
+    </main>
+
+    <aside class="service-sidebar">
+      <div class="sidebar-card">
+        <h3>Book a Consultation</h3>
+        <p>Meet with a board-certified dermatologist to discuss your {service.name} options.</p>
+        <a href="/contact" class="btn btn-primary" style="width:100%;text-align:center;">Schedule Today</a>
+        <hr class="sidebar-rule" />
+        <div class="sidebar-contact">
+          <p><strong>Call us:</strong> <a href={`tel:${site.phone}`}>{site.phone}</a></p>
+          <p><strong>Hours:</strong> {site.hours}</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(135deg, #4A3F7A, #2D1F5E);
+  padding: 10rem 0 4rem; color: white;
+}
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.breadcrumb a:hover { color: var(--color-brand-secondary); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2.25rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.service-layout {
+  display: grid; grid-template-columns: 1fr 340px; gap: 4rem;
+  padding-top: 4rem; padding-bottom: 6rem; align-items: start;
+}
+.service-block { margin-bottom: 3rem; }
+.service-block h2 {
+  font-family: var(--font-display); font-size: 1.75rem;
+  color: var(--color-brand-primary); margin: 0 0 1rem;
+}
+.service-block p { color: var(--color-text-secondary); line-height: 1.8; margin: 0 0 1rem; }
+.candidate-list, .steps-list {
+  color: var(--color-text-secondary); line-height: 2; padding-left: 1.5rem;
+}
+.steps-list li { margin-bottom: 0.5rem; }
+.faq-block h2 {
+  font-family: var(--font-display); font-size: 1.75rem;
+  color: var(--color-brand-primary); margin: 0 0 1.5rem;
+}
+.faq-item {
+  border-bottom: 1px solid rgba(196,168,130,0.2); padding: 1.25rem 0;
+}
+.faq-q {
+  font-weight: 600; color: var(--color-text-primary); cursor: pointer;
+  list-style: none; display: flex; justify-content: space-between;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: "+"; color: var(--color-brand-primary); font-size: 1.25rem; }
+details[open] .faq-q::after { content: "−"; }
+.faq-a { color: var(--color-text-secondary); margin: 1rem 0 0; line-height: 1.7; }
+.sidebar-card {
+  position: sticky; top: 7rem;
+  background: var(--color-surface-base);
+  border: 1px solid rgba(196,168,130,0.2);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+.sidebar-card h3 {
+  font-family: var(--font-display); font-size: 1.375rem;
+  color: var(--color-brand-primary); margin: 0 0 0.75rem;
+}
+.sidebar-card p { color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+.sidebar-rule { border: none; border-top: 1px solid rgba(196,168,130,0.2); margin: 1.5rem 0; }
+.sidebar-contact p { font-size: 0.875rem; color: var(--color-text-secondary); margin: 0.5rem 0; }
+.sidebar-contact a { color: var(--color-brand-primary); }
+@media (max-width: 1023px) {
+  .service-layout { grid-template-columns: 1fr; }
+  .sidebar-card { position: static; }
+}
+</style>

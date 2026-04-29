@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const insurers = ["Aetna","BlueCross BlueShield","Cigna","Humana","Medicare","Medicaid","United Healthcare","Anthem","Kaiser Permanente","Tricare","Workers Compensation","Auto Insurance (PIP)"];
+---
+<Layout
+  title={`Insurance & Billing | ${site.clinic_name}`}
+  description={`${site.clinic_name} accepts most major insurance plans. Learn about our accepted insurers and billing process.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">Insurance</span>
+      </nav>
+      <h1 class="reveal">Insurance & Billing</h1>
+      <p class="page-hero-sub reveal">We accept most major insurance plans and are committed to transparent billing</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="insurance-layout">
+        <div class="insurance-main">
+          <div class="reveal">
+            <span class="section-tag">Accepted Insurance</span>
+            <h2>We Accept Most Major Plans</h2>
+            <p>We work with the following insurance providers to make your care as accessible as possible. Please contact us to verify your specific benefits.</p>
+          </div>
+          <div class="insurers-grid reveal">
+            {insurers.map(ins => (
+              <div class="insurer-card">{ins}</div>
+            ))}
+          </div>
+
+          <div class="billing-info reveal" style="margin-top:3rem;">
+            <h2>Understanding Your Benefits</h2>
+            <p>We recommend calling the member services number on your insurance card before your appointment to verify your orthopedic benefits, deductible status, and any prior authorization requirements.</p>
+          </div>
+
+          <div class="faq-section reveal" style="margin-top:3rem;">
+            <h2>Billing FAQ</h2>
+            {[
+              { q: "Do I need a referral?", a: "Referral requirements vary by insurance plan. Check with your primary care physician and insurer before scheduling." },
+              { q: "What if I'm uninsured?", a: "We offer self-pay rates and payment plans. Contact our billing department to discuss your options." },
+              { q: "How do I dispute a bill?", a: "Contact our billing department at the number on your statement and we will review and resolve any discrepancies promptly." },
+            ].map(faq => (
+              <details class="faq-item">
+                <summary class="faq-q">{faq.q}</summary>
+                <p class="faq-a">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <aside class="insurance-sidebar">
+          <div class="verify-card">
+            <h3>Verify Your Benefits</h3>
+            <p>Have your insurance card ready and submit this form for a benefits check.</p>
+            <form name="insurance-verify" method="POST" data-netlify="true">
+              <input type="hidden" name="form-name" value="insurance-verify" />
+              <div class="form-group"><label for="v-name">Name</label><input type="text" id="v-name" name="name" /></div>
+              <div class="form-group"><label for="v-insurance">Insurance Provider</label><input type="text" id="v-insurance" name="insurance" /></div>
+              <div class="form-group"><label for="v-member-id">Member ID</label><input type="text" id="v-member-id" name="member-id" /></div>
+              <div class="form-group"><label for="v-phone">Phone</label><input type="tel" id="v-phone" name="phone" /></div>
+              <button type="submit" class="btn btn-accent" style="color:white;width:100%;">Verify Benefits</button>
+            </form>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #0A2E6E, #1565C0); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.insurance-layout { display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: start; }
+.insurance-main h2 { color: var(--color-brand-primary); margin: 1rem 0; }
+.insurance-main p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; }
+.insurers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem; }
+.insurer-card {
+  padding: 0.875rem 1rem; background: var(--color-surface-alt);
+  border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500;
+  color: var(--color-brand-primary); border-left: 3px solid var(--color-brand-accent);
+}
+.faq-item { border-bottom: 1px solid rgba(10,46,110,0.1); }
+.faq-q { cursor: pointer; padding: 1.25rem 0; font-weight: 600; color: var(--color-brand-primary); list-style: none; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::before { content: '+'; margin-right: 0.75rem; color: var(--color-brand-accent); font-size: 1.25rem; }
+details[open] .faq-q::before { content: '−'; }
+.faq-a { padding: 0 0 1.25rem 1.5rem; color: var(--color-text-secondary); line-height: 1.75; margin: 0; }
+.insurance-sidebar { position: sticky; top: 100px; }
+.verify-card { background: var(--color-surface-alt); border-radius: var(--radius-lg); padding: 2rem; border-top: 4px solid var(--color-brand-accent); }
+.verify-card h3 { color: var(--color-brand-primary); margin: 0 0 0.75rem; }
+.verify-card p { color: var(--color-text-secondary); margin: 0 0 1.5rem; font-size: 0.9rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-weight: 600; font-size: 0.8125rem; margin-bottom: 0.375rem; color: var(--color-text-primary); }
+.form-group input { width: 100%; padding: 0.75rem 0.875rem; border: 1.5px solid rgba(10,46,110,0.2); border-radius: var(--radius-md); font-family: var(--font-body); outline: none; }
+.form-group input:focus { border-color: var(--color-brand-accent); }
+@media (max-width: 1023px) { .insurance-layout { grid-template-columns: 1fr; } .insurance-sidebar { position: static; } }
+@media (max-width: 639px) { .insurers-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

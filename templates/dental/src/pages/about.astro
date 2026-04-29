@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout
+  title={`About Us | ${site.clinic_name}`}
+  description={`Learn about ${site.clinic_name} — our story, mission, and commitment to exceptional dental care.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span> / </span><span aria-current="page">About</span>
+      </nav>
+      <h1 class="reveal">Our Story</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container story-grid">
+      <div class="story-text reveal">
+        <span class="section-tag">Who We Are</span>
+        <h2>A Family Dental Practice Built on Trust</h2>
+        <p>{site.clinic_name} was founded with one goal: to make dental care a positive experience for every patient. We believe a healthy smile changes lives.</p>
+        <p>Our practice combines the latest dental technology with a warm, welcoming environment where patients of all ages feel comfortable and cared for.</p>
+      </div>
+      <div class="story-image reveal" aria-hidden="true">
+        <div class="image-placeholder"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section values-section">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">What Drives Us</span>
+        <h2>Our Core Values</h2>
+        <div class="teal-rule"></div>
+      </header>
+      <div class="values-grid">
+        {[
+          { icon: '😊', title: 'Patient Comfort', desc: 'We go above and beyond to ensure every visit is comfortable, relaxed, and anxiety-free.' },
+          { icon: '🦷', title: 'Clinical Excellence', desc: 'We invest in continuing education and the latest technology to deliver the best outcomes.' },
+          { icon: '🏠', title: 'Family Focus', desc: 'We treat patients like family — building long-term relationships built on trust and respect.' },
+        ].map(v => (
+          <div class="value-card reveal">
+            <div class="value-icon" aria-hidden="true">{v.icon}</div>
+            <h3>{v.title}</h3>
+            <p>{v.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #023E8A, #0077B6); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); }
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.story-text h2 { color: var(--color-brand-secondary); margin: 0 0 1.5rem; }
+.story-text p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1.25rem; }
+.image-placeholder { height: 420px; border-radius: var(--radius-lg); background: linear-gradient(135deg, #00B4D8, #023E8A); }
+.values-section { background: var(--color-surface-alt); }
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.value-card { padding: 2.5rem 2rem; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); text-align: center; }
+.value-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+.value-card h3 { color: var(--color-brand-secondary); margin: 0 0 0.75rem; }
+.value-card p { color: var(--color-text-secondary); line-height: 1.7; margin: 0; }
+@media (max-width: 1023px) { .story-grid { grid-template-columns: 1fr; gap: 3rem; } .values-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .values-grid { grid-template-columns: 1fr; } }
+</style>

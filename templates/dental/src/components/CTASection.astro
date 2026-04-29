@@ -1,0 +1,38 @@
+---
+import site from '../content/site.json';
+const {
+  headline = 'Ready for Your Best Smile?',
+  subtext = 'Friendly, expert dental care for the whole family.',
+  ctaLabel = site.main_cta,
+  ctaHref = '/contact',
+} = Astro.props;
+---
+<section class="cta-section">
+  <div class="container cta-inner">
+    <div class="reveal">
+      <h2 class="cta-headline">{headline}</h2>
+      <p class="cta-sub">{subtext}</p>
+    </div>
+    <a href={ctaHref} class="btn btn-primary cta-btn">{ctaLabel}</a>
+  </div>
+</section>
+
+<style>
+.cta-section {
+  background: var(--color-brand-secondary);
+  padding: 6rem 0; position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: ''; position: absolute; bottom: -60px; right: -60px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: rgba(0,180,216,0.1); pointer-events: none;
+}
+.cta-inner { display: flex; align-items: center; justify-content: space-between; gap: 3rem; flex-wrap: wrap; }
+.cta-headline {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  color: white; margin: 0 0 0.75rem;
+}
+.cta-sub { color: rgba(255,255,255,0.75); margin: 0; font-size: 1.125rem; }
+.cta-btn { flex-shrink: 0; font-size: 1rem; padding: 1rem 2.5rem; }
+@media (max-width: 767px) { .cta-inner { flex-direction: column; text-align: center; } }
+</style>

@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+
+const defaultDoctors = [
+  { name: "Dr. James Mitchell", title: "MD, FAAOS", specialty: "Joint Replacement Specialist", bio: "20+ years with over 3,000 successful joint replacement surgeries. Fellowship-trained at Hospital for Special Surgery.", credentials: ["FAAOS", "ABOS"] },
+  { name: "Dr. Maria Santos", title: "MD", specialty: "Sports Medicine & Arthroscopy", bio: "Team physician for professional athletes. Specializes in ACL reconstruction and minimally invasive shoulder procedures.", credentials: ["ABOS"] },
+  { name: "Dr. Kevin Park", title: "MD, PhD", specialty: "Spine & Complex Reconstruction", bio: "Fellowship-trained spine surgeon. Expert in minimally invasive spine surgery and complex deformity correction.", credentials: ["ABOS", "SRS"] },
+];
+const doctors = site.doctors.length > 0 ? site.doctors : defaultDoctors;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": doctors.map((d: any) => ({
+    "@type": "Physician",
+    "name": d.name,
+    "medicalSpecialty": d.specialty,
+    "worksFor": { "@type": "MedicalOrganization", "name": site.clinic_name },
+  }))
+};
+---
+<Layout
+  title={`Our Team | ${site.clinic_name}`}
+  description={`Meet the board-certified orthopedic specialists at ${site.clinic_name}.`}
+  schema={schema}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">Our Team</span>
+      </nav>
+      <h1 class="reveal">Meet Our Surgeons</h1>
+      <p class="page-hero-sub reveal">Board-certified orthopedic specialists committed to your recovery</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="team-grid">
+        {doctors.map((d: any) => <DoctorCard {...d} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #0A2E6E, #1565C0); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+@media (max-width: 1023px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .team-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,15 @@
+{
+  "clinic_name": "Clinic Name",
+  "tagline": "Expert Care",
+  "phone": "(555) 000-0000",
+  "address": "123 Main St, City, State",
+  "email": "info@clinic.com",
+  "hours": "Mon-Fri 9am-5pm",
+  "logo_url": "",
+  "hero_headline": "Expert Medical Care",
+  "hero_subtext": "Serving our community with excellence",
+  "main_cta": "Book a Consultation",
+  "doctors": [],
+  "services": [],
+  "specialty": "med-spa"
+}

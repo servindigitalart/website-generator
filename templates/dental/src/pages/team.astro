@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const defaultDoctors = [
+  { name: "Dr. Emily Chen", title: "DDS", specialty: "Cosmetic & General Dentistry", bio: "Specializing in smile transformations with a gentle, patient-first approach for over 12 years." },
+  { name: "Dr. Marcus Williams", title: "DMD, MSD", specialty: "Orthodontics & Invisalign", bio: "Expert in clear aligner therapy and traditional orthodontic treatment for teens and adults." },
+  { name: "Dr. Sofia Reyes", title: "DDS", specialty: "Pediatric & Family Dentistry", bio: "Creating positive dental experiences for children and families since 2010." },
+];
+const doctors = site.doctors.length > 0 ? site.doctors : defaultDoctors;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": doctors.map((d: any) => ({
+    "@type": "Physician",
+    "name": d.name,
+    "medicalSpecialty": d.specialty,
+    "worksFor": { "@type": "MedicalOrganization", "name": site.clinic_name },
+  }))
+};
+---
+<Layout
+  title={`Our Team | ${site.clinic_name}`}
+  description={`Meet the dental team at ${site.clinic_name}.`}
+  schema={schema}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span> / </span><span aria-current="page">Our Team</span>
+      </nav>
+      <h1 class="reveal">Meet Our Dental Team</h1>
+      <p class="page-hero-sub reveal">Passionate professionals dedicated to your smile</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="team-grid">
+        {doctors.map((d: any) => <DoctorCard {...d} />)}
+      </div>
+    </div>
+  </section>
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #023E8A, #0077B6); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); font-size: 1.125rem; margin: 0; }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+@media (max-width: 1023px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .team-grid { grid-template-columns: 1fr; } }
+</style>

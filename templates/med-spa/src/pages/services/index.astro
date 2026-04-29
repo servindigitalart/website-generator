@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CTASection from '../../components/CTASection.astro';
+import site from '../../content/site.json';
+
+const defaultServices = [
+  { name: "Botox & Fillers", description: "Precision injectables for natural-looking volume and smoothing.", page_slug: "botox-fillers" },
+  { name: "Laser Resurfacing", description: "Advanced laser technology for skin rejuvenation.", page_slug: "laser-resurfacing" },
+  { name: "Chemical Peels", description: "Medical-grade exfoliation for luminous, refined skin.", page_slug: "chemical-peels" },
+  { name: "Microneedling", description: "Collagen induction for firmer, more radiant skin.", page_slug: "microneedling" },
+  { name: "Body Contouring", description: "Non-surgical sculpting for your ideal silhouette.", page_slug: "body-contouring" },
+  { name: "IV Therapy", description: "Customized nutrient infusions for wellness and glow.", page_slug: "iv-therapy" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+---
+<Layout
+  title={`Treatments | ${site.clinic_name}`}
+  description={`Explore our curated aesthetic treatments at ${site.clinic_name}.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span> / </span><span aria-current="page">Treatments</span>
+      </nav>
+      <span class="page-overline">Our Menu</span>
+      <h1 class="reveal">Curated Treatments</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="services-grid">
+        {services.map((s: any) => (
+          <a href={`/services/${s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}`} class="service-card reveal">
+            <div class="card-top-bar" aria-hidden="true"></div>
+            <h2>{s.name}</h2>
+            <p>{s.description}</p>
+            <span class="card-link">Explore →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero {
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%; animation: gradientShift 8s ease infinite;
+  padding: 10rem 0 4rem; color: var(--color-text-primary);
+}
+.breadcrumb { font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+.breadcrumb a { color: rgba(245,240,232,0.4); }
+.breadcrumb a:hover { color: var(--color-text-gold); }
+.page-overline { font-size: 0.625rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-text-gold); display: block; margin-bottom: 1rem; }
+.page-hero h1 { font-family: var(--font-display); font-style: italic; color: var(--color-text-primary); margin: 0; }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.service-card {
+  display: flex; flex-direction: column; padding: 2.5rem 2rem;
+  background: var(--color-surface-light); transition: background 0.3s;
+  position: relative;
+}
+.service-card:hover { background: var(--color-surface-alt); }
+.card-top-bar { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: rgba(201,169,110,0.4); }
+.service-card h2 { font-family: var(--font-display); font-size: 1.375rem; color: var(--color-text-primary); margin: 1rem 0 0.875rem; font-weight: 400; }
+.service-card p { color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.7; margin: 0 0 1.5rem; flex: 1; }
+.card-link { font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-text-gold); }
+@media (max-width: 1023px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .services-grid { grid-template-columns: 1fr; } }
+</style>

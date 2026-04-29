@@ -1,0 +1,263 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalOrganization",
+  "name": site.clinic_name,
+  "telephone": site.phone,
+  "email": site.email,
+  "address": { "@type": "PostalAddress", "streetAddress": site.address },
+  "openingHours": site.hours,
+  "url": siteUrl,
+};
+
+const defaultServices = [
+  { name: "Primary Care", description: "Comprehensive preventive and routine care for your whole family.", page_slug: "primary-care" },
+  { name: "Urgent Care", description: "Same-day appointments for non-emergency medical needs.", page_slug: "urgent-care" },
+  { name: "Chronic Disease Management", description: "Ongoing support for diabetes, hypertension, and more.", page_slug: "chronic-disease" },
+  { name: "Preventive Health", description: "Annual wellness exams, screenings, and immunizations.", page_slug: "preventive-health" },
+  { name: "Telehealth", description: "Convenient virtual visits from the comfort of your home.", page_slug: "telehealth" },
+  { name: "Lab & Diagnostics", description: "On-site laboratory testing for fast, accurate results.", page_slug: "lab-diagnostics" },
+];
+const services = (site as any).services?.length > 0 ? (site as any).services : defaultServices;
+
+const defaultDoctors = [
+  { name: "Dr. Sarah Mitchell", title: "MD, FACP", specialty: "Internal Medicine & Primary Care", bio: "Board-certified internist with 18 years of experience in comprehensive adult care and chronic disease management." },
+  { name: "Dr. James Okonkwo", title: "MD, FAAFP", specialty: "Family Medicine", bio: "Family physician dedicated to providing personalized, evidence-based care for patients of all ages." },
+  { name: "Dr. Linda Huang", title: "DO, MPH", specialty: "Preventive Medicine", bio: "Preventive medicine specialist focused on empowering patients through lifestyle medicine and wellness programs." },
+];
+const doctors = (site as any).doctors?.length > 0 ? (site as any).doctors : defaultDoctors;
+
+const defaultTestimonials = [
+  { quote: "The team here truly listens and takes time to understand your concerns. I've never felt rushed or dismissed.", patient: "Patricia W.", treatment: "Primary Care" },
+  { quote: "Same-day urgent care that actually felt personal. They remembered my history from my previous visit.", patient: "Marcus T.", treatment: "Urgent Care" },
+  { quote: "Managing my diabetes has been so much easier with their proactive approach and regular check-ins.", patient: "Eileen S.", treatment: "Chronic Disease Management" },
+];
+
+const stats = [
+  { number: 15000, suffix: '+', label: 'Patients Served' },
+  { number: 20, suffix: '+', label: 'Years of Care' },
+  { number: 98, suffix: '%', label: 'Patient Satisfaction' },
+  { number: 3, suffix: '', label: 'Convenient Locations' },
+];
+---
+<Layout
+  title={`${site.clinic_name} — ${site.tagline}`}
+  description={`${site.clinic_name}: ${site.hero_subtext} Book your appointment today.`}
+  schema={schema}
+>
+  <Nav />
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <span class="hero-badge">Accepting New Patients</span>
+        <h1 class="reveal">{site.hero_headline}</h1>
+        <p class="hero-sub reveal reveal-delay-1">{site.hero_subtext}</p>
+        <div class="hero-actions reveal reveal-delay-2">
+          <a href="/contact" class="btn btn-white">{site.main_cta}</a>
+          <a href="/services" class="btn btn-outline-white">Our Services</a>
+        </div>
+        <div class="hero-trust reveal reveal-delay-3">
+          <span class="trust-item">✓ Board-Certified Physicians</span>
+          <span class="trust-item">✓ Same-Day Appointments</span>
+          <span class="trust-item">✓ Most Insurance Accepted</span>
+        </div>
+      </div>
+      <div class="hero-card reveal reveal-delay-2" aria-hidden="true">
+        <div class="hero-card-inner">
+          <p class="card-label">Quick Contact</p>
+          <a href={`tel:${site.phone}`} class="card-phone">{site.phone}</a>
+          <p class="card-hours">{site.hours}</p>
+          <a href="/contact" class="btn btn-primary" style="width:100%;text-align:center;margin-top:1rem;">Book Online</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 72" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0 72V36C240 0 480 0 720 36C960 72 1200 72 1440 36V72H0Z" fill="white"/></svg>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats-bar">
+    <div class="container stats-grid">
+      {stats.map(stat => (
+        <div class="stat-item reveal">
+          <span class="stat-number" data-count={stat.number} data-suffix={stat.suffix}>0{stat.suffix}</span>
+          <span class="stat-label">{stat.label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section">
+    <div class="container">
+      <header class="section-header">
+        <span class="section-tag">What We Offer</span>
+        <h2>Our Medical Services</h2>
+        <p>Comprehensive care for every stage of life, delivered by a team that truly knows you.</p>
+      </header>
+      <div class="services-grid">
+        {services.slice(0, 6).map((s: any, i: number) => (
+          <div class={`reveal reveal-delay-${(i % 3) + 1}`}>
+            <ServiceCard {...s} />
+          </div>
+        ))}
+      </div>
+      <div class="services-cta">
+        <a href="/services" class="btn btn-outline">View All Services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About strip -->
+  <section class="about-strip">
+    <div class="container about-grid">
+      <div class="about-image reveal" aria-hidden="true">
+        <div class="about-img-placeholder"></div>
+      </div>
+      <div class="about-text reveal reveal-delay-1">
+        <span class="section-tag">Who We Are</span>
+        <h2>Compassionate Care, Proven Results</h2>
+        <p>At {site.clinic_name}, we believe healthcare should be accessible, personalized, and built on trust. Our team of board-certified physicians takes the time to truly understand each patient's unique needs.</p>
+        <p>From preventive wellness to managing complex conditions, we partner with you every step of the way.</p>
+        <div class="about-actions">
+          <a href="/about" class="btn btn-primary">Our Story</a>
+          <a href="/team" class="btn btn-outline">Meet the Team</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Doctors -->
+  <section class="section" style="background:var(--color-surface-alt);">
+    <div class="container">
+      <header class="section-header">
+        <span class="section-tag">Our Physicians</span>
+        <h2>Meet Your Care Team</h2>
+        <p>Experienced, board-certified providers who are committed to your long-term health and well-being.</p>
+      </header>
+      <div class="doctors-grid">
+        {doctors.slice(0, 3).map((d: any, i: number) => (
+          <div class={`reveal reveal-delay-${i + 1}`}>
+            <DoctorCard {...d} />
+          </div>
+        ))}
+      </div>
+      <div class="services-cta">
+        <a href="/team" class="btn btn-outline">View Full Team</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section">
+    <div class="container">
+      <header class="section-header">
+        <span class="section-tag">Patient Stories</span>
+        <h2>What Our Patients Say</h2>
+      </header>
+      <div class="testimonials-grid">
+        {defaultTestimonials.map((t, i) => (
+          <div class={`reveal reveal-delay-${i + 1}`}>
+            <TestimonialCard {...t} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, var(--color-brand-primary) 0%, #0041A8 100%);
+  padding: 9rem 0 0;
+  position: relative; overflow: hidden;
+}
+.hero-inner { display: grid; grid-template-columns: 1fr 320px; gap: 3rem; align-items: center; padding-bottom: 5rem; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.35rem 0.875rem; background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.05em; color: white; text-transform: uppercase; margin-bottom: 1.25rem;
+}
+.hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--color-brand-accent); border-radius: 50%; }
+.hero h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); color: white; margin-bottom: 1.25rem; line-height: 1.15; }
+.hero-sub { font-size: 1.125rem; color: rgba(255,255,255,0.8); max-width: 520px; margin-bottom: 2rem; line-height: 1.7; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.btn-outline-white {
+  display: inline-flex; align-items: center; padding: 0.75rem 1.75rem;
+  font-family: var(--font-display); font-size: 0.9375rem; font-weight: 600;
+  border-radius: var(--radius-full); border: 2px solid rgba(255,255,255,0.4);
+  color: white; background: transparent; text-decoration: none; transition: all var(--transition);
+}
+.btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.1); color: white; }
+.hero-trust { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.trust-item { font-size: 0.8125rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+.hero-card { }
+.hero-card-inner {
+  background: white; border-radius: var(--radius-xl);
+  padding: 2rem; box-shadow: var(--shadow-lg);
+}
+.card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); font-weight: 600; margin-bottom: 0.5rem; }
+.card-phone { display: block; font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--color-brand-primary); margin-bottom: 0.5rem; }
+.card-hours { font-size: 0.8125rem; color: var(--color-text-muted); }
+.hero-wave { position: relative; bottom: -2px; }
+.hero-wave svg { display: block; width: 100%; height: 72px; }
+
+/* Stats */
+.stats-bar { padding: 3rem 0; border-bottom: 1px solid var(--color-border); }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center; }
+.stat-number { display: block; font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--color-brand-primary); line-height: 1; margin-bottom: 0.5rem; }
+.stat-label { font-size: 0.875rem; color: var(--color-text-muted); font-weight: 500; }
+
+/* Services */
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.services-cta { text-align: center; margin-top: 3rem; }
+
+/* About */
+.about-strip { padding: 5rem 0; background: var(--color-surface-alt); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.about-img-placeholder { height: 420px; background: linear-gradient(135deg, #DBEAFE, #EFF6FF); border-radius: var(--radius-xl); }
+.about-text .section-tag { margin-bottom: 1rem; display: block; }
+.about-text h2 { margin-bottom: 1.25rem; font-size: clamp(1.75rem, 3vw, 2.5rem); }
+.about-text p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1rem; font-size: 0.9375rem; }
+.about-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+
+/* Doctors */
+.doctors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+/* Testimonials */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+@media (max-width: 1023px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-card { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .doctors-grid { grid-template-columns: repeat(2, 1fr); }
+  .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 639px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .doctors-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+}
+</style>

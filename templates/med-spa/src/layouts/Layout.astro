@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+const {
+  title,
+  description = '',
+  canonical = '',
+  ogImage = '',
+  schema = null,
+} = Astro.props;
+
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_VERIFICATION;
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+const fullCanonical = canonical || siteUrl;
+const fullOg = ogImage || `${siteUrl}/og-default.jpg`;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  {description && <meta name="description" content={description} />}
+  <link rel="canonical" href={fullCanonical} />
+  <meta property="og:title" content={title} />
+  {description && <meta property="og:description" content={description} />}
+  <meta property="og:image" content={fullOg} />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+  {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <slot name="head" />
+</head>
+<body>
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <slot />
+  <script src="/scripts/animations.js" defer></script>
+</body>
+</html>

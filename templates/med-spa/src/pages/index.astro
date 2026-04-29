@@ -1,0 +1,182 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import DoctorCard from '../components/DoctorCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const siteUrl = import.meta.env.SITE || 'https://CLINIC_SUBDOMAIN.medplatform.io';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "@id": `${siteUrl}/#website`, "url": siteUrl, "name": site.clinic_name },
+    {
+      "@type": "MedicalOrganization",
+      "@id": `${siteUrl}/#org`,
+      "name": site.clinic_name, "url": siteUrl,
+      "telephone": site.phone, "email": site.email,
+      "address": { "@type": "PostalAddress", "streetAddress": site.address },
+      "medicalSpecialty": "Medical Aesthetics",
+    }
+  ]
+};
+
+const defaultServices = [
+  { name: "Botox & Fillers", description: "Precision injectables to smooth, lift, and restore facial volume naturally.", page_slug: "botox-fillers", price_hint: "From $350" },
+  { name: "Laser Resurfacing", description: "Advanced laser technology to rejuvenate skin texture, tone, and signs of aging.", page_slug: "laser-resurfacing", price_hint: "From $600" },
+  { name: "Chemical Peels", description: "Medical-grade chemical exfoliation for luminous, refined skin.", page_slug: "chemical-peels", price_hint: "From $200" },
+  { name: "Microneedling", description: "Collagen induction therapy for firmer, more radiant skin.", page_slug: "microneedling", price_hint: "From $300" },
+  { name: "Body Contouring", description: "Non-surgical fat reduction and skin tightening for a sculpted silhouette.", page_slug: "body-contouring", price_hint: "From $800" },
+  { name: "IV Therapy", description: "Customized nutrient infusions for optimal wellness and skin luminosity.", page_slug: "iv-therapy", price_hint: "From $150" },
+];
+const services = site.services.length > 0 ? site.services : defaultServices;
+
+const defaultDoctors = [
+  { name: "Dr. Alexandra Voss", title: "MD, ABAAM", specialty: "Medical Aesthetics Director", bio: "Board-certified physician with 15 years crafting natural, results-driven aesthetic outcomes." },
+  { name: "Dr. Isabelle Laurent", title: "NP-BC", specialty: "Injectable Specialist", bio: "Advanced injector trained in Paris and New York, renowned for facial harmony." },
+  { name: "Dr. Naomi Tanaka", title: "RN, CANS", specialty: "Laser & Skin Specialist", bio: "Expert in advanced laser technologies and medical-grade skincare protocols." },
+];
+const doctors = site.doctors.length > 0 ? site.doctors : defaultDoctors;
+
+const testimonials = [
+  { quote: "The level of artistry here is unlike anything I've experienced. My results look completely natural — exactly what I wanted.", patient: "C. Laurent", treatment: "Botox & Fillers" },
+  { quote: "Walking in, I felt like I was entering a private sanctuary. The consultation alone changed how I think about self-care.", patient: "M. Ashford", treatment: "Laser Resurfacing" },
+];
+---
+<Layout
+  title={`${site.clinic_name} | Medical Aesthetics`}
+  description={`${site.clinic_name} — ${site.tagline}. Exclusive medical aesthetics where science meets artistry.`}
+  schema={schema}
+>
+  <Nav />
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <span class="hero-line reveal" aria-hidden="true"></span>
+      <p class="hero-overline hero-animate">Medical Aesthetics</p>
+      <h1 id="hero-heading" class="hero-headline">
+        <span class="hero-line-1">Transform Your</span>
+        <em class="hero-line-2">Confidence</em>
+      </h1>
+      <p class="hero-sub hero-animate">{site.hero_subtext || 'Where medical precision meets refined artistry. Exclusive treatments. Discreet results.'}</p>
+      <a href="/contact" class="btn btn-ghost cta-magnetic hero-animate">Begin Your Journey</a>
+    </div>
+    <div class="scroll-chevron" aria-hidden="true">
+      <svg width="20" height="12" viewBox="0 0 20 12" fill="none"><path d="M1 1l9 9 9-9" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </section>
+
+  <!-- TREATMENTS -->
+  <section class="section treatments-section" aria-labelledby="treatments-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Our Treatments</span>
+        <h2 id="treatments-heading">Curated Aesthetics</h2>
+        <div class="gold-rule" style="margin:0 auto;"></div>
+      </header>
+    </div>
+    <div class="services-horizontal-wrap container">
+      <div class="services-horizontal" role="list">
+        {services.slice(0, 6).map((s: any) => (
+          <ServiceCard
+            name={s.name}
+            description={s.description}
+            slug={s.page_slug || s.name.toLowerCase().replace(/\s+/g, '-')}
+            price_hint={s.price_hint || ''}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section testimonials-section" aria-labelledby="testimonials-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Client Experiences</span>
+        <h2 id="testimonials-heading">The Transformation Speaks</h2>
+        <div class="gold-rule" style="margin:0 auto;"></div>
+      </header>
+      <div class="testimonials-grid">
+        {testimonials.map(t => <TestimonialCard {...t} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section team-section" aria-labelledby="team-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Our Specialists</span>
+        <h2 id="team-heading">The Artists Behind Your Results</h2>
+        <div class="gold-rule" style="margin:0 auto;"></div>
+      </header>
+      <div class="team-grid">
+        {doctors.slice(0, 3).map((d: any) => <DoctorCard {...d} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section gallery-section" aria-labelledby="gallery-heading">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">Our Studio</span>
+        <h2 id="gallery-heading" style="font-style:italic;">The Space</h2>
+        <div class="gold-rule" style="margin:0 auto;"></div>
+      </header>
+      <div class="gallery-grid" aria-label="Studio gallery placeholders">
+        {[1,2,3,4].map(() => (
+          <div class="gallery-item reveal" aria-hidden="true">
+            <div class="gallery-placeholder"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+/* HERO */
+.hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; }
+.hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(45deg, #1A1A2E, #2D1F5E, #1A1A2E, #0F0F1A);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+.hero-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at 60% 50%, rgba(201,169,110,0.06), transparent 70%); }
+.hero-content { position: relative; z-index: 1; padding-top: 8rem; padding-bottom: 6rem; max-width: 700px; }
+.hero-line { display: block; width: 80px; height: 1px; background: var(--color-text-gold); margin-bottom: 1.75rem; }
+.hero-overline { font-size: 0.6875rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-text-gold); margin: 0 0 1.5rem; font-family: var(--font-body); display: block; }
+.hero-headline { font-family: var(--font-display); color: var(--color-text-primary); margin: 0 0 1.5rem; line-height: 1.1; }
+.hero-line-1 { display: block; font-weight: 400; font-size: clamp(2.5rem, 5.5vw, 5.625rem); }
+.hero-line-2 { display: block; font-weight: 700; font-style: italic; font-size: clamp(2.5rem, 5.5vw, 5.625rem); }
+.hero-sub { font-family: var(--font-caption); font-style: italic; font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--color-text-secondary); margin: 0 0 3rem; max-width: 480px; line-height: 1.75; }
+.scroll-chevron { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); animation: scrollBounce 2s ease-in-out infinite; z-index: 1; opacity: 0.7; }
+@keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+/* SECTIONS */
+.treatments-section { background: var(--color-surface-alt); }
+.services-horizontal-wrap { overflow: hidden; }
+.testimonials-section { background: var(--color-surface-base); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-top: 0; }
+.team-section { background: var(--color-surface-alt); }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.gallery-section { background: var(--color-surface-base); }
+.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+.gallery-placeholder { height: 320px; background: linear-gradient(135deg, #1A1A2E, #252538, #1E1E30); }
+
+@media (max-width: 1023px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .testimonials-grid, .team-grid, .gallery-grid { grid-template-columns: 1fr; } }
+</style>

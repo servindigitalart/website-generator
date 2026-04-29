@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+
+const insurers = ["Aetna","BlueCross BlueShield","Cigna","UnitedHealthcare","Humana","Medicare","Medicaid","Anthem","Kaiser Permanente","Tricare"];
+---
+<Layout
+  title={`Insurance & Billing | ${site.clinic_name}`}
+  description={`${site.clinic_name} accepts most major insurance plans. Verify your coverage and learn about our billing policies.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a> <span> / </span> <span aria-current="page">Insurance</span>
+      </nav>
+      <h1 class="reveal">Insurance &amp; Billing</h1>
+      <p class="page-hero-sub reveal">We accept most major insurance plans</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <header class="section-header reveal">
+        <h2>Accepted Insurance Plans</h2>
+        <span class="gold-rule"></span>
+      </header>
+      <ul class="insurance-grid" role="list">
+        {insurers.map(ins => (
+          <li class="insurance-item reveal">
+            <div class="insurance-logo-placeholder" aria-hidden="true"></div>
+            <span>{ins}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="insurance-note reveal">Don&apos;t see your insurance? Contact us — we accept many additional plans not listed here.</p>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--color-surface-alt)">
+    <div class="container verify-wrap">
+      <div class="reveal">
+        <h2>Verify Your Coverage</h2>
+        <p>Complete this form and our billing team will contact you within one business day with your benefits information.</p>
+      </div>
+      <form class="verify-form reveal" aria-label="Insurance verification form">
+        <div class="form-row">
+          <div class="form-group"><label for="ins-name">Full Name</label><input type="text" id="ins-name" name="name" required /></div>
+          <div class="form-group"><label for="ins-dob">Date of Birth</label><input type="date" id="ins-dob" name="dob" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="ins-provider">Insurance Provider</label><input type="text" id="ins-provider" name="insurance_provider" /></div>
+          <div class="form-group"><label for="ins-id">Member ID</label><input type="text" id="ins-id" name="member_id" /></div>
+        </div>
+        <div class="form-group"><label for="ins-phone">Phone Number</label><input type="tel" id="ins-phone" name="phone" /></div>
+        <button type="submit" class="btn btn-primary">Verify My Benefits</button>
+      </form>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #4A3F7A, #2D1F5E); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0 0 0.75rem; font-size: clamp(2.25rem, 4vw, 3.5rem); }
+.page-hero-sub { color: rgba(255,255,255,0.75); margin: 0; }
+.section-header { text-align: center; margin-bottom: 3rem; }
+.section-header h2 { font-family: var(--font-display); font-size: 2rem; color: var(--color-brand-primary); margin: 0 0 1rem; }
+.section-header .gold-rule { margin: 0 auto; }
+.insurance-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; list-style: none; padding: 0; margin: 0 0 2rem; }
+.insurance-item { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; font-size: 0.875rem; color: var(--color-text-secondary); }
+.insurance-logo-placeholder { width: 80px; height: 48px; border-radius: var(--radius-md); background: var(--color-surface-alt); border: 1px solid rgba(196,168,130,0.2); }
+.insurance-note { text-align: center; color: var(--color-text-secondary); font-style: italic; }
+.verify-wrap { max-width: 720px; }
+.verify-wrap h2 { font-family: var(--font-display); font-size: 2rem; color: var(--color-brand-primary); margin: 0 0 1rem; }
+.verify-wrap p { color: var(--color-text-secondary); margin: 0 0 2rem; }
+.verify-form { display: flex; flex-direction: column; gap: 0; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+.form-group label { font-size: 0.875rem; font-weight: 600; }
+.form-group input { padding: 0.75rem 1rem; border: 1.5px solid rgba(196,168,130,0.3); border-radius: var(--radius-md); font-family: var(--font-body); font-size: 0.9375rem; background: var(--color-surface-base); }
+.form-group input:focus { border-color: var(--color-brand-primary); outline: none; }
+@media (max-width: 1023px) { .insurance-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 639px) { .insurance-grid { grid-template-columns: repeat(2, 1fr); } .form-row { grid-template-columns: 1fr; } }
+</style>

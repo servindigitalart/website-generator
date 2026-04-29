@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CTASection from '../components/CTASection.astro';
+import site from '../content/site.json';
+---
+<Layout
+  title={`About Us | ${site.clinic_name}`}
+  description={`Learn about ${site.clinic_name} — our story, mission, and commitment to orthopedic excellence.`}
+>
+  <Nav />
+  <section class="page-hero">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">About</span>
+      </nav>
+      <h1 class="reveal">Our Story</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container story-grid">
+      <div class="story-text reveal">
+        <span class="section-tag">Who We Are</span>
+        <h2>Built on Expertise. Driven by Results.</h2>
+        <p>Founded by fellowship-trained orthopedic surgeons, {site.clinic_name} has grown into a leading center of excellence for musculoskeletal care. We combine cutting-edge surgical techniques with comprehensive rehabilitation services.</p>
+        <p>Our philosophy is simple: treat every patient as an individual with unique needs and goals. We take time to listen, thoroughly diagnose, and craft personalized treatment plans.</p>
+      </div>
+      <div class="story-image reveal" aria-hidden="true">
+        <div class="image-placeholder"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section values-section">
+    <div class="container">
+      <header class="section-header reveal">
+        <span class="section-tag">What We Stand For</span>
+        <h2>Our Values</h2>
+        <div class="orange-rule"></div>
+      </header>
+      <div class="values-grid">
+        {[
+          { icon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5"/><path d="M13 20l5 5 9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`, title: "Clinical Excellence", desc: "We hold ourselves to the highest standards of surgical technique and evidence-based medicine." },
+          { icon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 6l3 9h9l-7 5 3 9-8-6-8 6 3-9-7-5h9z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`, title: "Patient-Centered Care", desc: "Your goals, concerns, and wellbeing guide every treatment decision we make." },
+          { icon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5"/><path d="M14 20h12M20 14v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, title: "Innovation", desc: "We continuously adopt the latest techniques and technologies to improve your outcomes." },
+        ].map(v => (
+          <div class="value-card reveal">
+            <div class="value-icon" set:html={v.icon} />
+            <h3>{v.title}</h3>
+            <p>{v.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+  <Footer />
+</Layout>
+
+<style>
+.page-hero { background: linear-gradient(135deg, #0A2E6E, #1565C0); padding: 10rem 0 4rem; color: white; }
+.breadcrumb { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+.breadcrumb a { color: rgba(255,255,255,0.6); }
+.page-hero h1 { color: white; margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); }
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.story-text h2 { color: var(--color-brand-primary); margin: 0 0 1.5rem; }
+.story-text p { color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 1.25rem; }
+.image-placeholder { height: 420px; border-radius: var(--radius-lg); background: linear-gradient(135deg, #0A2E6E, #1565C0); }
+.values-section { background: var(--color-surface-alt); }
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.value-card { padding: 2.5rem 2rem; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border-top: 4px solid var(--color-brand-accent); }
+.value-icon { color: var(--color-brand-accent); margin-bottom: 1.25rem; }
+.value-card h3 { color: var(--color-brand-primary); margin: 0 0 0.75rem; }
+.value-card p { color: var(--color-text-secondary); line-height: 1.7; margin: 0; }
+@media (max-width: 1023px) { .story-grid { grid-template-columns: 1fr; gap: 3rem; } .values-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px) { .values-grid { grid-template-columns: 1fr; } }
+</style>
