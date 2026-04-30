@@ -7,10 +7,8 @@ pydantic-settings==2.1.0
 redis==5.0.1
 celery==5.3.6
 
-# FIX CRÍTICO (compatibilidad)
-websockets==12.0
-google-genai==0.3.0
 supabase==2.3.0
+google-generativeai==0.8.3
 
 # Google APIs (compatibles con genai 0.x)
 google-auth==2.29.0

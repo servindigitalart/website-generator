@@ -9,8 +9,7 @@ a ready-to-build Astro site by:
 6. Injecting IndexNow key
 7. Injecting schema markup defaults
 """
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from core.config import settings
 from models.generation_package import WebsiteGenerationPackage
 from pathlib import Path
@@ -38,7 +37,7 @@ BUILDS_DIR = Path(__file__).parent.parent / "builds"
 
 class SiteAgent:
     def __init__(self):
-        self.client = genai.Client(api_key=settings.gemini_api_key)
+        genai.configure(api_key=settings.gemini_api_key)
 
     def select_template(self, specialty: str) -> str:
         """Map specialty string to template directory name"""

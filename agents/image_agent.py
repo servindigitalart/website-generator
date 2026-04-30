@@ -4,9 +4,12 @@ Google Gemini Imagen 3.0 API and stores them in Cloudflare R2.
 
 Uses specialty-specific prompt templates from skills/medical_image_prompts.md
 to generate images that look like professional photography, not AI stock.
+
+NOTE: Image generation (Imagen) requires the google-genai SDK and is not
+available with google-generativeai==0.8.3. generate_image() will raise
+NotImplementedError; generate_section_images() will return empty lists.
 """
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from core.config import settings
 from core.database import get_supabase
 from pathlib import Path
@@ -183,7 +186,7 @@ IMAGE_PROMPTS = {
 
 class ImageAgent:
     def __init__(self):
-        self.client = genai.Client(api_key=settings.gemini_api_key)
+        genai.configure(api_key=settings.gemini_api_key)
         self.r2 = (
             boto3.client(
                 "s3",
@@ -232,24 +235,10 @@ class ImageAgent:
         Returns list of image bytes.
         """
         try:
-            response = await asyncio.to_thread(
-                self.client.models.generate_images,
-                model=settings.imagen_model,
-                prompt=prompt,
-                config=types.GenerateImagesConfig(
-                    number_of_images=min(count, 4),
-                    aspect_ratio=aspect_ratio,
-                    safety_filter_level="block_only_high",
-                    person_generation="allow_adult",
-                ),
+            raise NotImplementedError(
+                "Image generation (Imagen) is not supported with "
+                "google-generativeai==0.8.3; requires google-genai SDK"
             )
-            images = []
-            for img in response.generated_images:
-                if hasattr(img.image, "image_bytes"):
-                    images.append(img.image.image_bytes)
-                elif hasattr(img.image, "data"):
-                    images.append(img.image.data)
-            return images
         except Exception as e:
             logger.error("imagen_generation_failed",
                          error=str(e), prompt=prompt[:100])

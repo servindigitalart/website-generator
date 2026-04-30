@@ -2,8 +2,7 @@
 SEOContentAgent — generates SEO-optimized blog articles
 from GSC keyword opportunities. Runs weekly via GitHub Action.
 """
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from core.config import settings
 from core.database import get_supabase
 from pathlib import Path
@@ -19,7 +18,14 @@ SEO_PATTERNS = (SKILLS_DIR / "seo_content_patterns.md").read_text()
 
 class SEOContentAgent:
     def __init__(self):
-        self.client = genai.Client(api_key=settings.gemini_api_key)
+        genai.configure(api_key=settings.gemini_api_key)
+        self._model = genai.GenerativeModel(
+            "gemini-2.0-flash",
+            generation_config=genai.types.GenerationConfig(
+                max_output_tokens=4096,
+                temperature=0.4,
+            ),
+        )
 
     @retry(
         stop=stop_after_attempt(3),
@@ -94,15 +100,7 @@ REQUIREMENTS:
 - HIPAA safe — no patient data examples
 - Include local SEO signals (city name, local context)
 """
-        response = await asyncio.to_thread(
-            self.client.models.generate_content,
-            model="gemini-2.0-flash",
-            contents=[prompt],
-            config=types.GenerateContentConfig(
-                max_output_tokens=4096,
-                temperature=0.4,
-            ),
-        )
+        response = await asyncio.to_thread(self._model.generate_content, [prompt])
 
         text = response.text.strip()
         text = re.sub(r"^```json\s*", "", text)
