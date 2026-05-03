@@ -1,5 +1,4 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -18,8 +17,8 @@ class Settings(BaseSettings):
 
     # Google / Gemini
     gemini_api_key: str = ""
-    google_service_account_json: str = ""  # path to JSON file
-    gsc_property_prefix: str = "sc-domain:"  # or "https://"
+    google_service_account_json: str = ""
+    gsc_property_prefix: str = "sc-domain:"
 
     # Cloudflare R2
     r2_endpoint: str = ""
@@ -33,10 +32,10 @@ class Settings(BaseSettings):
     vercel_project_prefix: str = "clinic-"
 
     # Domain
-    base_domain: str = "medplatform.io"  # clinica.medplatform.io
+    base_domain: str = "medplatform.io"
 
     # IndexNow
-    indexnow_key: str = ""  # global key for all sites
+    indexnow_key: str = ""
 
     # UX Analyzer
     ux_analyzer_url: str = "http://localhost:8002"
@@ -50,15 +49,13 @@ class Settings(BaseSettings):
 
     # SEO automation
     weekly_articles_count: int = 2
-    min_keyword_position: int = 4   # only target pos 4-20
+    min_keyword_position: int = 4
     max_keyword_position: int = 20
 
     # Cost tracking
     gemini_cost_per_1k_tokens: float = 0.000075
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 settings = Settings()
