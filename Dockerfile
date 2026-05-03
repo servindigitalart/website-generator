@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 8006
 
-CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8006}"]
+CMD ["sh", "-c", "python -c 'import api.main; print(\"Import OK\")' 2>&1 && uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8006}"]
