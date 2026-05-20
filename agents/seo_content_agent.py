@@ -179,7 +179,12 @@ schema: |
         keyword_position: float,
         hero_image_url: str = "",
     ) -> str:
-        """Save article to clinic_seo_articles table"""
+        """
+        Save generated article to clinic_seo_articles.
+        published_at is intentionally NULL here — it is only set by
+        PublishAgent after the MDX file is deployed to the live Vercel site.
+        indexnow_sent=false signals that deployment is still pending.
+        """
         result = (
             get_supabase()
             .from_("clinic_seo_articles")
@@ -194,7 +199,8 @@ schema: |
                     "content_mdx": article["content_mdx"],
                     "meta_description": article["meta_description"],
                     "hero_image_url": hero_image_url,
-                    "published_at": datetime.now(timezone.utc).isoformat(),
+                    # published_at left NULL — set by PublishAgent on deployment
+                    "indexnow_sent": False,
                 }
             )
             .execute()

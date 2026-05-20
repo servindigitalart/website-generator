@@ -42,6 +42,15 @@ class Settings(BaseSettings):
 
     # B2B Prospector Workers
     workers_url: str = "http://localhost:8000"
+    # Shared secret for POST /api/onboarding/site-activated.
+    # Must match WG_SHARED_SECRET set in the workers Railway service.
+    # Leave empty in dev to disable auth on both sides.
+    workers_shared_secret: str = ""
+
+    # Pipeline concurrency
+    # Hard cap on simultaneously active generation pipelines (status=generating/building/deploying).
+    # 0 = disabled. Tune per Railway RAM tier: 512MB→3, 1GB→5, 2GB→10.
+    max_concurrent_pipelines: int = 5
 
     # Image generation
     imagen_model: str = "imagen-3.0-generate-001"

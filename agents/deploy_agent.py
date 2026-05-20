@@ -2,14 +2,18 @@
 DeployAgent — builds the Astro site and deploys to Vercel.
 
 Steps:
-1. Run `npm install` in build directory
-2. Run `npm run build` to produce ./dist
-3. Upload ./dist to Cloudflare R2 (static asset CDN)
-4. Create / upsert a Vercel project and deploy ./dist
-5. Add subdomain DNS alias on Vercel
-6. Return live URL
+1. Archive source dir to R2 (before build, for future re-publishes)
+2. Run `npm install` in build directory
+3. Run `npm run build` to produce ./dist
+4. Upload ./dist to Cloudflare R2 (dist archive)
+5. Create / upsert a Vercel project and deploy ./dist
+6. Add subdomain DNS alias on Vercel
+7. Return live URL
+
+Source archive key: sources/{clinic_id}/{site_id}.zip
+Dist archive key:   builds/{clinic_id}/{site_id}.zip
 """
-import asyncio, shutil, json, uuid, structlog
+import asyncio, shutil, structlog, zipfile
 from pathlib import Path
 from core.config import settings
 import httpx, boto3
@@ -56,7 +60,7 @@ class DeployAgent:
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
-        stdout, stderr = await proc.communicate()
+        _, stderr = await proc.communicate()
         if proc.returncode != 0:
             raise RuntimeError(
                 f"npm install failed: {stderr.decode()[:500]}"
@@ -69,7 +73,7 @@ class DeployAgent:
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
-        stdout, stderr = await proc.communicate()
+        _, stderr = await proc.communicate()
         if proc.returncode != 0:
             raise RuntimeError(
                 f"npm build failed: {stderr.decode()[:1000]}"
@@ -83,13 +87,86 @@ class DeployAgent:
         return dist_dir
 
     # ------------------------------------------------------------------
-    # Upload to R2 (source archive for record-keeping)
+    # R2 archive helpers
     # ------------------------------------------------------------------
+
+    def _source_r2_key(self, clinic_id: str, site_id: str) -> str:
+        return f"sources/{clinic_id}/{site_id}.zip"
+
+    def _dist_r2_key(self, clinic_id: str, site_id: str) -> str:
+        return f"builds/{clinic_id}/{site_id}.zip"
+
+    def _zip_source(self, source_dir: Path, archive_path: Path) -> None:
+        """Zip source_dir to archive_path, excluding node_modules and dist."""
+        skip = {"node_modules", "dist", ".astro"}
+        with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as zf:
+            for path in source_dir.rglob("*"):
+                if any(part in skip for part in path.parts):
+                    continue
+                if path.is_file():
+                    zf.write(path, path.relative_to(source_dir))
+
+    async def upload_source_to_r2(
+        self, source_dir: Path, clinic_id: str, site_id: str
+    ) -> str:
+        """
+        Zip the Astro source directory (excluding node_modules/dist) and
+        upload to R2. Returns the R2 key. Called before build so a clean
+        source snapshot is always available for article re-publishing.
+        """
+        if not self.r2:
+            logger.warning("r2_not_configured_source_skip")
+            return ""
+
+        archive_path = source_dir.parent / f"{site_id}-source.zip"
+        try:
+            await asyncio.to_thread(self._zip_source, source_dir, archive_path)
+            r2_key = self._source_r2_key(clinic_id, site_id)
+            with open(archive_path, "rb") as f:
+                await asyncio.to_thread(
+                    self.r2.put_object,
+                    Bucket=settings.r2_bucket,
+                    Key=r2_key,
+                    Body=f,
+                    ContentType="application/zip",
+                )
+            logger.info("source_uploaded_r2", key=r2_key,
+                        size_kb=archive_path.stat().st_size // 1024)
+            return r2_key
+        finally:
+            archive_path.unlink(missing_ok=True)
+
+    async def download_source_from_r2(
+        self, clinic_id: str, site_id: str, dest_dir: Path
+    ) -> Path:
+        """
+        Download and extract the source archive from R2 into dest_dir.
+        Returns dest_dir. Raises if R2 is not configured or key not found.
+        """
+        if not self.r2:
+            raise RuntimeError("R2 not configured — cannot pull source archive")
+
+        r2_key = self._source_r2_key(clinic_id, site_id)
+        archive_path = dest_dir.parent / f"{site_id}-source-dl.zip"
+        try:
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            response = await asyncio.to_thread(
+                self.r2.get_object,
+                Bucket=settings.r2_bucket,
+                Key=r2_key,
+            )
+            body = await asyncio.to_thread(response["Body"].read)
+            archive_path.write_bytes(body)
+            await asyncio.to_thread(shutil.unpack_archive, str(archive_path), str(dest_dir))
+            logger.info("source_downloaded_r2", key=r2_key, dest=str(dest_dir))
+            return dest_dir
+        finally:
+            archive_path.unlink(missing_ok=True)
 
     async def upload_dist_to_r2(
         self, dist_dir: Path, clinic_id: str, site_id: str
     ) -> str:
-        """Zip and upload the dist directory to R2. Returns R2 URL."""
+        """Zip and upload the dist directory to R2. Returns R2 key."""
         if not self.r2:
             return ""
 
@@ -103,7 +180,7 @@ class DeployAgent:
             str(dist_dir),
         )
 
-        r2_key = f"builds/{clinic_id}/{archive_name}"
+        r2_key = self._dist_r2_key(clinic_id, site_id)
         with open(archive_path, "rb") as f:
             await asyncio.to_thread(
                 self.r2.put_object,
@@ -156,7 +233,6 @@ class DeployAgent:
         self,
         dist_dir: Path,
         project_name: str,
-        subdomain: str,
     ) -> dict:
         """
         Deploy dist/ to Vercel via Files API.
@@ -260,6 +336,12 @@ class DeployAgent:
     # Top-level deploy orchestration
     # ------------------------------------------------------------------
 
+    async def cleanup_build_dir(self, build_dir: Path) -> None:
+        """Remove the local build directory after deployment to prevent disk accumulation."""
+        if build_dir.exists():
+            await asyncio.to_thread(shutil.rmtree, build_dir, ignore_errors=True)
+            logger.info("build_dir_cleaned", path=str(build_dir))
+
     async def deploy(
         self,
         build_dir: Path,
@@ -269,18 +351,25 @@ class DeployAgent:
     ) -> dict:
         """
         Full build + deploy flow.
+        Archives source to R2 before building so re-publish is always possible.
         Returns {
             site_url, preview_url,
-            vercel_project_id, vercel_deployment_id, r2_key
+            vercel_project_id, vercel_deployment_id, r2_key, r2_source_key
         }
         """
+        # Archive source BEFORE build (node_modules not yet present or excluded)
+        r2_source_key = await self.upload_source_to_r2(build_dir, clinic_id, site_id)
+
         dist_dir = await self.build_site(build_dir)
 
         project_name = f"{settings.vercel_project_prefix}{subdomain}"
 
-        vercel = await self.deploy_to_vercel(dist_dir, project_name, subdomain)
+        vercel = await self.deploy_to_vercel(dist_dir, project_name)
         site_url = await self.add_vercel_domain(project_name, subdomain)
         r2_key = await self.upload_dist_to_r2(dist_dir, clinic_id, site_id)
+
+        # Clean up local build directory after successful deploy
+        await self.cleanup_build_dir(build_dir)
 
         return {
             "site_url": f"https://{site_url}",
@@ -288,4 +377,5 @@ class DeployAgent:
             "vercel_project_id": vercel["project_id"],
             "vercel_deployment_id": vercel["deployment_id"],
             "r2_key": r2_key,
+            "r2_source_key": r2_source_key,
         }
