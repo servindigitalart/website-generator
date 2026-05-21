@@ -136,36 +136,51 @@ try:
     @app.get("/health")
     async def health():
         """
-        Deep health check — probes every critical dependency.
-        Returns 200 if all healthy, 503 if any dependency is degraded.
-        Used by Railway restart policy and external uptime monitors.
+        Shallow liveness probe — always 200 if the process is alive.
+        Railway uses this path for health checks; it must never return 503.
+        Deep dependency checks are at /ready.
         """
+        return JSONResponse(content={"status": "ok", "service": "website-generator"})
+
+    @app.get("/ready")
+    async def ready():
+        """
+        Deep readiness check — probes Redis, Supabase, and R2.
+        Returns 200 if all critical dependencies are healthy, 503 otherwise.
+        Use for external uptime monitors and pre-traffic validation.
+        """
+        import asyncio
         checks: dict[str, str] = {}
         healthy = True
 
         # Redis
         try:
             from core.redis_client import get_redis
-            r = get_redis()
-            r.ping()
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(None, get_redis().ping)
             checks["redis"] = "ok"
         except Exception as exc:
             checks["redis"] = f"error: {exc}"
             healthy = False
 
-        # Supabase (lightweight query)
+        # Supabase (lightweight read)
         try:
             from core.database import get_supabase
-            get_supabase().from_("clinic_websites").select("id").limit(1).execute()
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(
+                None,
+                lambda: get_supabase().from_("clinic_websites").select("id").limit(1).execute(),
+            )
             checks["supabase"] = "ok"
         except Exception as exc:
             checks["supabase"] = f"error: {exc}"
             healthy = False
 
-        # R2 (bucket reachable)
+        # R2 (bucket reachable — non-fatal if not configured)
         try:
             import boto3
-            if settings.r2_endpoint:
+            if settings.r2_endpoint and settings.r2_access_key:
+                loop = asyncio.get_running_loop()
                 s3 = boto3.client(
                     "s3",
                     endpoint_url=settings.r2_endpoint,
@@ -173,15 +188,14 @@ try:
                     aws_secret_access_key=settings.r2_secret_key,
                     region_name="auto",
                 )
-                s3.head_bucket(Bucket=settings.r2_bucket)
+                await loop.run_in_executor(None, lambda: s3.head_bucket(Bucket=settings.r2_bucket))
                 checks["r2"] = "ok"
             else:
                 checks["r2"] = "not_configured"
         except Exception as exc:
             checks["r2"] = f"error: {exc}"
-            # R2 degraded is non-fatal for the API
+            # R2 degraded is non-fatal for liveness — generation still works without archiving
 
-        status_code = 200 if healthy else 503
         return JSONResponse(
             content={
                 "status": "ok" if healthy else "degraded",
@@ -189,7 +203,7 @@ try:
                 "checks": checks,
                 "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             },
-            status_code=status_code,
+            status_code=200 if healthy else 503,
         )
 
     @app.get("/")
