@@ -17,7 +17,7 @@ google-api-python-client==2.126.0
 
 # Utils
 boto3==1.34.0
-httpx==0.27.0
+httpx==0.24.1
 python-multipart==0.0.9
 structlog==24.1.0
 python-dotenv==1.0.0
