@@ -304,9 +304,13 @@ async def run_pipeline(job_id: str, req: GenerateRequest, request_id: str | None
         )
         indexnow_key = settings.indexnow_key or str(uuid.uuid4()).replace("-", "")
 
-        # Insert clinic_websites row — from here on site_id is available
-        # for all subsequent checkpoints.
-        site_record = get_supabase().from_("clinic_websites").insert({
+        # Upsert clinic_websites row — handles retries after failure by
+        # resetting a prior error record rather than inserting a duplicate.
+        db = get_supabase()
+        existing = db.from_("clinic_websites").select("id, retry_count").eq(
+            "clinic_id", req.clinic_id
+        ).maybe_single().execute()
+        upsert_data = {
             "clinic_id": req.clinic_id,
             "clinic_name": package.brand_dna.brand_name,
             "specialty": package.specialty,
@@ -318,8 +322,20 @@ async def run_pipeline(job_id: str, req: GenerateRequest, request_id: str | None
             "current_step": current_step,
             "step_started_at": _now(),
             "wg_job_id": job_id,
-            "retry_count": 0,
-        }).execute()
+            "retry_count": (existing.data or {}).get("retry_count", 0),
+            # Reset failure fields from prior error run
+            "last_error": None,
+            "failed_at": None,
+            "callback_ok": None,
+            "callback_attempts": 0,
+        }
+        if existing.data:
+            site_record = db.from_("clinic_websites").update(upsert_data).eq(
+                "clinic_id", req.clinic_id
+            ).execute()
+        else:
+            upsert_data["retry_count"] = 0
+            site_record = db.from_("clinic_websites").insert(upsert_data).execute()
         site_id = site_record.data[0]["id"]
         update_job(job_id, {"site_id": site_id})
 
