@@ -425,7 +425,6 @@ async def run_pipeline(job_id: str, req: GenerateRequest, request_id: str | None
             "vercel_deployment_id": vercel["deployment_id"],
             "vercel_deployment_url": vercel["preview_url"],
             "preview_url": vercel["preview_url"],
-            "vercel_project_id": vercel["project_id"],
         }, started_at=step_started)
         update_job(job_id, {
             "vercel_deployment_id": vercel["deployment_id"],

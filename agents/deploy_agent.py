@@ -264,19 +264,23 @@ class DeployAgent:
                         "encoding": "base64",
                     })
 
-        project_id = await self.get_or_create_vercel_project(project_name)
+        await self.get_or_create_vercel_project(project_name)
+
+        # v13 deployments: projectId is NOT a valid body field — project is
+        # matched by name. skipAutoDetectionConfirmation=1 bypasses the
+        # framework-detection prompt that otherwise returns 400.
+        deploy_params = {**self.team_params, "skipAutoDetectionConfirmation": "1"}
 
         async with httpx.AsyncClient(timeout=120) as client:
             payload = {
                 "name": project_name,
-                "projectId": project_id,
                 "files": files,
                 "target": "production",
             }
             r = await client.post(
                 f"{VERCEL_API}/v13/deployments",
                 headers=self.headers,
-                params=self.team_params,
+                params=deploy_params,
                 json=payload,
             )
             if not r.is_success:
@@ -293,7 +297,6 @@ class DeployAgent:
         deployment_url = await self._wait_for_deployment(deployment_id)
 
         return {
-            "project_id": project_id,
             "deployment_id": deployment_id,
             "preview_url": deployment_url,
         }
