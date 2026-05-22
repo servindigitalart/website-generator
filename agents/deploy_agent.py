@@ -13,7 +13,7 @@ Steps:
 Source archive key: sources/{clinic_id}/{site_id}.zip
 Dist archive key:   builds/{clinic_id}/{site_id}.zip
 """
-import asyncio, shutil, structlog, zipfile
+import asyncio, base64, shutil, structlog, zipfile
 from pathlib import Path
 from core.config import settings
 import httpx, boto3
@@ -242,17 +242,27 @@ class DeployAgent:
         Deploy dist/ to Vercel via Files API.
         Returns { deployment_id, preview_url }.
         """
-        # Collect all files
+        # Collect all files. Vercel v13 deployments API accepts:
+        #   text files  → plain string data (no encoding field)
+        #   binary files → base64-encoded data with encoding="base64"
+        TEXT_EXTS = {".html", ".css", ".js", ".mjs", ".json", ".txt",
+                     ".xml", ".svg", ".map", ".ts", ".md", ".toml"}
         files = []
         for file_path in dist_dir.rglob("*"):
             if file_path.is_file():
-                relative = file_path.relative_to(dist_dir)
+                relative = str(file_path.relative_to(dist_dir)).replace("\\", "/")
                 content = file_path.read_bytes()
-                files.append({
-                    "file": str(relative).replace("\\", "/"),
-                    "data": content.hex(),
-                    "encoding": "hex",
-                })
+                if file_path.suffix.lower() in TEXT_EXTS:
+                    files.append({
+                        "file": relative,
+                        "data": content.decode("utf-8", errors="replace"),
+                    })
+                else:
+                    files.append({
+                        "file": relative,
+                        "data": base64.b64encode(content).decode(),
+                        "encoding": "base64",
+                    })
 
         project_id = await self.get_or_create_vercel_project(project_name)
 
@@ -269,6 +279,9 @@ class DeployAgent:
                 params=self.team_params,
                 json=payload,
             )
+            if not r.is_success:
+                logger.error("vercel_deploy_error",
+                             status=r.status_code, body=r.text[:500])
             r.raise_for_status()
             dep = r.json()
             deployment_id = dep["id"]
