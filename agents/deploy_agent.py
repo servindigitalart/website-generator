@@ -133,6 +133,10 @@ class DeployAgent:
             logger.info("source_uploaded_r2", key=r2_key,
                         size_kb=archive_path.stat().st_size // 1024)
             return r2_key
+        except Exception as exc:
+            # R2 unavailable or bucket missing — non-fatal, deployment continues.
+            logger.warning("source_upload_r2_failed", error=str(exc))
+            return ""
         finally:
             archive_path.unlink(missing_ok=True)
 
